@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion des Présences</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#0f0f13;--surface:#17171d;--surface2:#1e1e26;--border:#2c2c3a;--accent:#6c63ff;--accent2:#ff6584;--green:#43e97b;--orange:#f7971e;--red:#ff4757;--text:#e8e8f0;--muted:#7a7a9a;--radius:10px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+body{min-height:100vh;background-attachment:fixed;background-image:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(108,99,255,.08) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(255,101,132,.06) 0%,transparent 60%);}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--surface);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.view{display:none;min-height:100vh;padding:24px 16px;}.view.active{display:block;}
+#viewSetup,#viewAccueil,#viewAuth{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+#viewSetup.active,#viewAccueil.active,#viewAuth.active{display:flex;}
+#viewApp{display:none;padding:0;}#viewApp.active{display:block;}
+.logo-area{text-align:center;}
+.logo-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 8px 32px rgba(108,99,255,.3);}
+.logo-title{font-size:26px;font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 0%,var(--muted) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-sub{color:var(--muted);font-size:13px;margin-top:4px;}
+.accueil-cards{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:560px;width:100%;}
+.accueil-card{flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;cursor:pointer;transition:all .2s;text-align:center;}
+.accueil-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(108,99,255,.15);}
+.accueil-card .card-icon{font-size:32px;margin-bottom:12px;}
+.accueil-card .card-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+.accueil-card .card-desc{font-size:12px;color:var(--muted);}
+.setup-box,.auth-wrap{width:100%;max-width:440px;}
+.auth-box,.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.auth-title{font-size:20px;font-weight:700;margin-bottom:4px;}
+.auth-sub{font-size:12px;color:var(--muted);margin-bottom:24px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color .2s;}
+.field input:focus,.field select:focus{border-color:var(--accent);}
+.field input::placeholder{color:var(--muted);}
+.pwd-wrap{position:relative;}
+.pwd-wrap input{padding-right:42px;}
+.pwd-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;color:var(--muted);font-size:16px;transition:color .2s;}
+.pwd-eye:hover{color:var(--text);}
+.btn{display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;padding:12px 16px;cursor:pointer;transition:all .2s;text-align:center;}
+.btn:hover{filter:brightness(1.1);}
+.btn:active{transform:scale(.99);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);margin-top:10px;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);filter:none;}
+.btn-danger{background:var(--red);}
+.btn-sm{padding:7px 14px;font-size:12px;width:auto;display:inline-block;}
+.btn-outline{background:transparent;border:1px solid var(--accent);color:var(--accent);}
+.btn-outline:hover{background:var(--accent);color:#fff;filter:none;}
+.msg{font-size:12px;padding:10px 14px;border-radius:8px;margin-bottom:14px;border-left:3px solid;}
+.msg.error{background:rgba(255,71,87,.08);border-color:var(--red);color:var(--red);}
+.msg.success{background:rgba(67,233,123,.08);border-color:var(--green);color:var(--green);}
+.msg.info{background:rgba(108,99,255,.08);border-color:var(--accent);color:var(--accent);}
+.msg.warn{background:rgba(247,151,30,.08);border-color:var(--orange);color:var(--orange);}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-size:13px;font-weight:500;z-index:999;transition:all .3s;white-space:nowrap;pointer-events:none;opacity:0;}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+#toast.success{border-color:var(--green);color:var(--green);}
+#toast.error{border-color:var(--red);color:var(--red);}
+#loader{display:none;position:fixed;inset:0;background:rgba(15,15,19,.7);z-index:500;align-items:center;justify-content:center;}
+#loader.show{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.app-logo{font-size:15px;font-weight:800;}
+.conn-info{font-size:11px;color:var(--muted);}
+.tab-bar{display:flex;gap:4px;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 12px 0;overflow-x:auto;}
+.tab{padding:8px 14px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-radius:8px 8px 0 0;border:1px solid transparent;border-bottom:none;white-space:nowrap;transition:all .2s;}
+.tab:hover{color:var(--text);background:var(--surface2);}
+.tab.active{color:var(--text);background:var(--bg);border-color:var(--border);}
+.tab-content{display:none;padding:16px;max-width:860px;margin:0 auto;}
+.tab-content.active{display:block;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px;}
+.card-title{font-size:15px;font-weight:700;}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.person-list{display:flex;flex-direction:column;gap:8px;}
+.person-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:border-color .2s;}
+.person-row.present{border-color:rgba(67,233,123,.4);}
+.person-row.absent{border-color:rgba(255,71,87,.4);}
+.person-row.justified{border-color:rgba(108,99,255,.4);}
+.person-name{flex:1;min-width:80px;font-size:14px;font-weight:500;}
+.person-alert{font-size:11px;color:var(--orange);}
+.status-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.status-btn{padding:6px 10px;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;transition:all .15s;white-space:nowrap;}
+.status-btn:hover{border-color:var(--text);color:var(--text);}
+.status-btn.active-present{background:rgba(67,233,123,.15);border-color:var(--green);color:var(--green);}
+.status-btn.active-absent{background:rgba(255,71,87,.15);border-color:var(--red);color:var(--red);}
+.status-btn.active-justified{background:rgba(108,99,255,.15);border-color:var(--accent);color:var(--accent);}
+.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.history-header{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:8px;flex-wrap:wrap;}
+.history-date{font-size:13px;font-weight:600;}
+.history-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.badge-sm{font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.badge-green{background:rgba(67,233,123,.15);color:var(--green);}
+.badge-red{background:rgba(255,71,87,.15);color:var(--red);}
+.badge-purple{background:rgba(108,99,255,.15);color:var(--accent);}
+.badge-orange{background:rgba(247,151,30,.15);color:var(--orange);}
+.badge-gray{background:rgba(122,122,154,.15);color:var(--muted);}
+.history-body{display:none;padding:0 14px 12px;border-top:1px solid var(--border);}
+.history-body.open{display:block;}
+.history-person-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(44,44,58,.5);font-size:13px;gap:8px;flex-wrap:wrap;}
+.history-person-row:last-child{border-bottom:none;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px;}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+.stat-value{font-size:26px;font-weight:800;}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px;}
+.person-stat-row{display:flex;align-items:center;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;gap:8px;font-size:13px;flex-wrap:wrap;}
+.person-stat-name{flex:1;min-width:80px;font-weight:500;}
+.alert-badge{font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(247,151,30,.15);color:var(--orange);font-weight:600;}
+.danger-badge{font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(255,71,87,.15);color:var(--red);font-weight:600;}
+.config-section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.days-grid{display:flex;gap:8px;flex-wrap:wrap;}
+.day-btn{padding:8px 14px;font-size:13px;font-weight:500;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;transition:all .15s;}
+.day-btn:hover{border-color:var(--accent);color:var(--accent);}
+.day-btn.selected{background:rgba(108,99,255,.15);border-color:var(--accent);color:var(--accent);}
+.zone-list{display:flex;flex-direction:column;gap:6px;}
+.zone-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;}
+.name-list{display:flex;flex-direction:column;gap:6px;}
+.name-item{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+.name-item input{flex:1;background:transparent;border:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;min-width:0;}
+.name-item.editing{border-color:var(--accent);}
+.input-row{display:flex;gap:8px;flex-wrap:wrap;}
+.input-row input{flex:1;min-width:100px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:9px 12px;outline:none;}
+.input-row input:focus{border-color:var(--accent);}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(108,99,255,.04);}
+.upload-icon{font-size:28px;margin-bottom:10px;}
+.upload-text{font-size:14px;font-weight:500;margin-bottom:4px;}
+.upload-sub{font-size:12px;color:var(--muted);}
+.time-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.time-row input[type=time]{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;width:130px;}
+.time-row input[type=time]:focus{border-color:var(--accent);}
+.time-row span{color:var(--muted);font-size:13px;}
+.date-input{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;width:100%;}
+.date-input:focus{border-color:var(--accent);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:400px;animation:fadeUp .2s ease;}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:18px;}
+.missed-alert{background:rgba(247,151,30,.08);border:1px solid rgba(247,151,30,.3);border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--orange);}
+.today-highlight{background:rgba(67,233,123,.06);border:1px solid rgba(67,233,123,.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;}
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted);font-size:13px;}
+.empty-icon{font-size:32px;margin-bottom:10px;}
+.mb8{margin-bottom:8px;}.mb12{margin-bottom:12px;}.mb16{margin-bottom:16px;}
+.github-info{background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.github-info strong{color:var(--text);}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div id="loader"><div class="spinner"></div></div>
+
+<!-- SETUP GITHUB -->
+<div id="viewSetup" class="view">
+  <div class="setup-box">
+    <div class="logo-area" style="margin-bottom:24px">
+      <div class="logo-icon">📋</div>
+      <div class="logo-title">Gestion des Présences</div>
+      <div class="logo-sub">Configuration initiale</div>
+    </div>
+    <div class="setup-card">
+      <div class="auth-title">Configuration GitHub</div>
+      <div class="auth-sub">Nécessaire pour synchroniser vos données sur tous vos appareils</div>
+      <div class="github-info">
+        Vos données seront stockées dans un repo GitHub privé.<br>
+        <strong>1.</strong> Créez un repo privé sur github.com (ex: <strong>presences-data</strong>)<br>
+        <strong>2.</strong> Créez un PAT sur github.com/settings/tokens (droits : <strong>repo</strong>)<br>
+        <strong>3.</strong> Remplissez les champs ci-dessous
+      </div>
+      <div id="setupMsg" style="display:none"></div>
+      <div class="field"><label>Nom d'utilisateur GitHub</label><input type="text" id="setupOwner" placeholder="ex: nathbu92"></div>
+      <div class="field"><label>Nom du repo</label><input type="text" id="setupRepo" placeholder="ex: presences-data"></div>
+      <div class="field"><label>Personal Access Token (PAT)</label><div class="pwd-wrap"><input type="password" id="setupPat" placeholder="ghp_xxxxxxxxxxxx"><button class="pwd-eye" onclick="togglePwd('setupPat',this)">👁</button></div></div>
+      <button class="btn" onclick="saveSetup()">Enregistrer et continuer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACCUEIL -->
+<div id="viewAccueil" class="view">
+  <div class="logo-area">
+    <div class="logo-icon">📋</div>
+    <div class="logo-title">Gestion des Présences</div>
+    <div class="logo-sub">Logiciel de suivi des présences</div>
+  </div>
+  <div class="accueil-cards">
+    <div class="accueil-card" onclick="showAuth('login')">
+      <div class="card-icon">🔑</div>
+      <div class="card-title">Se connecter</div>
+      <div class="card-desc">Accéder à une feuille existante</div>
+    </div>
+    <div class="accueil-card" onclick="showAuth('create')">
+      <div class="card-icon">✨</div>
+      <div class="card-title">Créer une feuille</div>
+      <div class="card-desc">Nouvelle feuille d'appel</div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- AUTH -->
+<div id="viewAuth" class="view">
+  <div class="auth-wrap">
+    <button class="btn btn-ghost btn-sm mb16" onclick="goAccueil()" style="margin-bottom:16px">← Retour</button>
+    <div class="auth-box" id="authBox"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="viewApp" class="view">
+  <div class="app-header">
+    <div>
+      <div class="app-logo">📋 <span id="headerSheetName">—</span></div>
+      <div class="conn-info" id="headerInfo"></div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="disconnect()" style="margin-top:0">Déconnexion</button>
+  </div>
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab('appel',this)">📞 Appel</div>
+    <div class="tab" onclick="switchTab('historique',this)">📚 Historique</div>
+    <div class="tab" onclick="switchTab('stats',this)">📊 Stats</div>
+    <div class="tab" onclick="switchTab('admin',this)">⚙️ Admin</div>
+  </div>
+  <div id="tabAppel" class="tab-content active"><div id="appelContent"></div></div>
+  <div id="tabHistorique" class="tab-content"><div id="historiqueContent"></div></div>
+  <div id="tabStats" class="tab-content"><div id="statsContent"></div></div>
+  <div id="tabAdmin" class="tab-content"><div id="adminContent"></div></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalBox"></div></div>
+
+<script>
+// ── GITHUB CONFIG ─────────────────────────────────────────────
+let GH = { owner:"nathbu92", repo:"présences", pat:"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" };
+
+
+// ── GITHUB STORAGE ────────────────────────────────────────────
+const GHApi = {
+  headers(){return{Authorization:`token ${GH.pat}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'};},
+  async getFile(path){
+    const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{headers:this.headers()});
+    if(r.status===404)return null;
+    if(!r.ok)throw new Error(`GitHub ${r.status}`);
+    const d=await r.json();
+    return{content:JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,''))))),sha:d.sha};
+  },
+  async putFile(path,content,sha){
+    const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))));
+    const body={message:`update ${path} - ${new Date().toISOString()}`,content:encoded};
+    if(sha)body.sha=sha;
+    const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{method:'PUT',headers:this.headers(),body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.json();throw new Error(e.message||`GitHub ${r.status}`);}
+    return await r.json();
+  },
+  async ensureRepo(){
+    const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}`,{headers:this.headers()});
+    if(r.status===404){
+      const cr=await fetch('https://api.github.com/user/repos',{method:'POST',headers:this.headers(),body:JSON.stringify({name:GH.repo,private:true,auto_init:true})});
+      if(!cr.ok)throw new Error('Impossible de créer le repo');
+      await new Promise(r=>setTimeout(r,2000));
+    }
+  }
+};
+
+// Cache SHA pour éviter conflits
+const shaCache = {};
+
+const Storage = {
+  async get(key){
+    try{
+      const path=`data/${key.replace(/[^a-z0-9_]/gi,'_')}.json`;
+      const r=await GHApi.getFile(path);
+      if(!r)return null;
+      shaCache[key]=r.sha;
+      return r.content;
+    }catch(e){console.error('Storage.get',e);return null;}
+  },
+  async set(key,val){
+    try{
+      const path=`data/${key.replace(/[^a-z0-9_]/gi,'_')}.json`;
+      const sha=shaCache[key]||null;
+      const r=await GHApi.putFile(path,val,sha);
+      shaCache[key]=r.content.sha;
+    }catch(e){console.error('Storage.set',e);throw e;}
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────────
+let currentSheet=null,authMode='login';
+
+// ── UTILS ─────────────────────────────────────────────────────
+function parseDateLocal(iso){const[y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d);}
+function fmtDate(d){if(!d)return'';const dt=typeof d==='string'?parseDateLocal(d):d;return dt.toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});}
+function fmtDateShort(d){if(!d)return'';const dt=typeof d==='string'?parseDateLocal(d):d;return dt.toLocaleDateString('fr-FR');}
+function fmtTime(t){if(!t)return'';const[h,m]=t.split(':');return`${h}h${m}`;}
+function toISODate(d){const dt=typeof d==='string'?new Date(d):d;return`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;}
+function today(){return toISODate(new Date());}
+function dayOfWeek(iso){return parseDateLocal(iso).getDay();}
+const DAY_NAMES=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+
+function showMsg(id,text,type){const el=document.getElementById(id);if(!el)return;el.className='msg '+type;el.innerHTML=text;el.style.display='block';}
+function hideMsg(id){const el=document.getElementById(id);if(el)el.style.display='none';}
+let toastTimer;
+function toast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='show '+type;clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.className='',2800);}
+function showLoader(){document.getElementById('loader').classList.add('show');}
+function hideLoader(){document.getElementById('loader').classList.remove('show');}
+function openModal(html){document.getElementById('modalBox').innerHTML=html;document.getElementById('modalOverlay').classList.add('open');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('modalOverlay'))closeModal();});
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goAccueil(){showView('viewAccueil');}
+function disconnect(){currentSheet=null;goAccueil();}
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  const map={appel:'tabAppel',historique:'tabHistorique',stats:'tabStats',admin:'tabAdmin'};
+  document.getElementById(map[name]).classList.add('active');
+  if(el)el.classList.add('active');
+  if(name==='appel')renderAppel();
+  if(name==='historique')renderHistorique();
+  if(name==='stats')renderStats();
+  if(name==='admin')renderAdmin();
+}
+function switchToMissed(){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===1));
+  document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',i===1));
+  renderHistorique();
+}
+
+// ── SETUP ─────────────────────────────────────────────────────
+async function saveSetup(){
+  const owner=document.getElementById('setupOwner').value.trim();
+  const repo=document.getElementById('setupRepo').value.trim();
+  const pat=document.getElementById('setupPat').value.trim();
+  if(!owner||!repo||!pat)return showMsg('setupMsg','Remplissez tous les champs','error');
+  GH={owner,repo,pat};
+  showLoader();
+  try{
+    await GHApi.ensureRepo();
+    
+    hideLoader();
+    toast('Configuration sauvegardée ✓');
+    goAccueil();
+  }catch(e){hideLoader();showMsg('setupMsg','Erreur : '+e.message,'error');}
+}
+
+// ── AUTH ──────────────────────────────────────────────────────
+function showAuth(mode){authMode=mode;showView('viewAuth');renderAuthBox();}
+function togglePwd(id,btn){const inp=document.getElementById(id);inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'👁':'🙈';}
+
+function renderAuthBox(){
+  const box=document.getElementById('authBox');
+  if(authMode==='create'){
+    box.innerHTML=`
+      <div class="auth-title">Créer une feuille d'appel</div>
+      <div class="auth-sub">Choisissez un nom et un mot de passe</div>
+      <div id="authMsg" style="display:none"></div>
+      <div class="field"><label>Nom de la feuille</label><input type="text" id="createName" placeholder="ex: Atelier Guitare"></div>
+      <div class="field"><label>Mot de passe</label><div class="pwd-wrap"><input type="password" id="createPwd" placeholder="Mot de passe"><button class="pwd-eye" onclick="togglePwd('createPwd',this)">👁</button></div></div>
+      <div class="field"><label>Confirmer</label><div class="pwd-wrap"><input type="password" id="createPwd2" placeholder="Répéter"><button class="pwd-eye" onclick="togglePwd('createPwd2',this)">👁</button></div></div>
+      <button class="btn" onclick="createSheet()">Créer</button>
+      <button class="btn btn-ghost" onclick="showAuth('login')">J'ai déjà une feuille</button>`;
+  }else{
+    box.innerHTML=`
+      <div class="auth-title">Se connecter</div>
+      <div class="auth-sub">Accéder à votre feuille d'appel</div>
+      <div id="authMsg" style="display:none"></div>
+      <div class="field"><label>Nom de la feuille</label><input type="text" id="loginName" placeholder="Nom de votre feuille"></div>
+      <div class="field"><label>Mot de passe</label><div class="pwd-wrap"><input type="password" id="loginPwd" placeholder="Mot de passe"><button class="pwd-eye" onclick="togglePwd('loginPwd',this)">👁</button></div></div>
+      <button class="btn" onclick="loginSheet()">Se connecter</button>
+      <button class="btn btn-ghost" onclick="showAuth('create')">Créer une nouvelle feuille</button>`;
+  }
+}
+
+async function createSheet(){
+  const name=document.getElementById('createName').value.trim();
+  const pwd=document.getElementById('createPwd').value;
+  const pwd2=document.getElementById('createPwd2').value;
+  if(!name)return showMsg('authMsg','Entrez un nom','error');
+  if(!pwd)return showMsg('authMsg','Entrez un mot de passe','error');
+  if(pwd!==pwd2)return showMsg('authMsg','Les mots de passe ne correspondent pas','error');
+  const key='sheet_'+name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  showLoader();
+  try{
+    const existing=await Storage.get(key);
+    if(existing){hideLoader();return showMsg('authMsg','Ce nom est déjà utilisé','error');}
+    const sheet={id:key,name,pwd:btoa(unescape(encodeURIComponent(pwd))),config:{days:[],timeStart:'18:00',timeEnd:'20:00',yearStart:today(),yearEnd:'',vacances:[]},persons:[],records:{}};
+    await Storage.set(key,sheet);
+    hideLoader();currentSheet=sheet;enterApp();
+  }catch(e){hideLoader();showMsg('authMsg','Erreur GitHub : '+e.message,'error');}
+}
+
+async function loginSheet(){
+  const name=document.getElementById('loginName').value.trim();
+  const pwd=document.getElementById('loginPwd').value;
+  if(!name||!pwd)return showMsg('authMsg','Remplissez tous les champs','error');
+  const key='sheet_'+name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  showLoader();
+  try{
+    const sheet=await Storage.get(key);
+    hideLoader();
+    if(!sheet)return showMsg('authMsg','Feuille introuvable','error');
+    if(sheet.pwd!==btoa(unescape(encodeURIComponent(pwd))))return showMsg('authMsg','Mot de passe incorrect','error');
+    currentSheet=sheet;enterApp();
+  }catch(e){hideLoader();showMsg('authMsg','Erreur GitHub : '+e.message,'error');}
+}
+
+function enterApp(){
+  document.getElementById('headerSheetName').textContent=currentSheet.name;
+  const cfg=currentSheet.config;
+  const days=(cfg.days||[]).map(d=>DAY_NAMES[d]).join(', ')||'—';
+  const hours=cfg.timeStart&&cfg.timeEnd?` · ${fmtTime(cfg.timeStart)}–${fmtTime(cfg.timeEnd)}`:'';
+  document.getElementById('headerInfo').textContent=days+hours;
+  showView('viewApp');
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',i===0));
+  renderAppel();
+}
+
+async function saveSheet(){
+  await Storage.set(currentSheet.id,currentSheet);
+}
+
+// ── VACANCES + JOURS ──────────────────────────────────────────
+function isVacance(iso){return(currentSheet.config.vacances||[]).some(v=>iso>=v.start&&iso<=v.end);}
+function isCallDay(iso){
+  const cfg=currentSheet.config;
+  if(!cfg.days||cfg.days.length===0)return false;
+  if(!cfg.days.includes(dayOfWeek(iso)))return false;
+  if(cfg.yearStart&&iso<cfg.yearStart)return false;
+  if(cfg.yearEnd&&iso>cfg.yearEnd)return false;
+  if(isVacance(iso))return false;
+  return true;
+}
+function personsAtDate(iso){return currentSheet.persons.filter(p=>p.active!==false&&p.startDate<=iso);}
+function getAllCallDays(){
+  const cfg=currentSheet.config;
+  if(!cfg.yearStart||!cfg.days||cfg.days.length===0)return[];
+  const days=[];const start=parseDateLocal(cfg.yearStart);const end=new Date();
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){const iso=toISODate(d);if(isCallDay(iso))days.push(iso);}
+  return days;
+}
+function getMissedDays(){return getAllCallDays().filter(d=>d<today()&&!currentSheet.records[d]);}
+
+// ── APPEL ─────────────────────────────────────────────────────
+function renderAppel(){
+  const el=document.getElementById('appelContent');
+  const cfg=currentSheet.config;const todayIso=today();const missed=getMissedDays();
+  let html='';
+  if(missed.length>0)html+=`<div class="missed-alert">⚠️ ${missed.length} appel(s) manqué(s) — <a href="#" onclick="switchToMissed();return false;" style="color:inherit;text-decoration:underline">voir l'historique</a></div>`;
+  if(!cfg.days||cfg.days.length===0){html+=`<div class="card"><div class="empty-state"><div class="empty-icon">⚙️</div>Configurez les jours d'appel dans Admin</div></div>`;el.innerHTML=html;return;}
+  const todayIsCall=isCallDay(todayIso);
+  const todayDone=!!(currentSheet.records[todayIso]&&(currentSheet.records[todayIso].__validated||Object.keys(currentSheet.records[todayIso]).filter(k=>k!=='__validated').length>0));
+  if(todayIsCall&&!todayDone)html+=renderApelDay(todayIso,true);
+  else if(todayIsCall&&todayDone)html+=`<div class="card"><div class="today-highlight">✅ L'appel du ${fmtDateShort(todayIso)} a été effectué.</div></div>`;
+  else html+=`<div class="card"><div class="empty-state"><div class="empty-icon">📅</div>Pas d'appel aujourd'hui<br><span style="color:var(--muted);font-size:12px">Jours : ${(cfg.days||[]).map(d=>DAY_NAMES[d]).join(', ')}</span></div></div>`;
+  if(missed.length>0){html+=`<div class="card"><div class="card-header"><div class="card-title">📂 Appels manqués à rattraper</div></div>`;missed.forEach(d=>{html+=renderApelDay(d,false);});html+=`</div>`;}
+  el.innerHTML=html;
+}
+function renderApelDay(dateIso,isToday){
+  const persons=personsAtDate(dateIso);const rec=currentSheet.records[dateIso]||{};
+  let html=`<div class="card" id="appelDay_${dateIso}"><div class="card-header"><div><div class="card-title">${isToday?'📞 Appel du jour':'📂 Appel manqué'}</div><div class="card-sub">${fmtDate(dateIso)}</div></div></div>`;
+  if(persons.length===0)html+=`<div class="empty-state" style="padding:16px 0">Aucune personne pour cette date</div>`;
+  else{
+    html+=`<div class="person-list" id="personList_${dateIso}">`;
+    persons.forEach(p=>{
+      const st=rec[p.id]||'';const alert=getPersonAlert(p.id)?'⚠️':'';
+      html+=`<div class="person-row ${st}" id="prow_${dateIso}_${p.id}">
+        <div class="person-name">${p.name} <span class="person-alert">${alert}</span></div>
+        <div class="status-btns">
+          <button class="status-btn ${st==='present'?'active-present':''}" onclick="setStatus('${dateIso}','${p.id}','present')">✓ Présent</button>
+          <button class="status-btn ${st==='absent'?'active-absent':''}" onclick="setStatus('${dateIso}','${p.id}','absent')">✗ Absent</button>
+          <button class="status-btn ${st==='justified'?'active-justified':''}" onclick="setStatus('${dateIso}','${p.id}','justified')">📋 Justifiée</button>
+        </div></div>`;
+    });
+    html+=`</div><div style="margin-top:14px"><button class="btn btn-sm" onclick="validateAppel('${dateIso}')">Valider l'appel</button></div>`;
+  }
+  html+=`</div>`;return html;
+}
+async function setStatus(dateIso,personId,status){
+  if(!currentSheet.records[dateIso])currentSheet.records[dateIso]={};
+  currentSheet.records[dateIso][personId]=status;
+  await saveSheet();
+  const row=document.getElementById(`prow_${dateIso}_${personId}`);
+  if(row){row.className='person-row '+status;row.querySelectorAll('.status-btn').forEach(b=>{b.className='status-btn';if(b.textContent.includes('Présent')&&status==='present')b.classList.add('active-present');if(b.textContent.includes('Absent')&&status==='absent')b.classList.add('active-absent');if(b.textContent.includes('Justifiée')&&status==='justified')b.classList.add('active-justified');});}
+}
+async function validateAppel(dateIso){
+  const persons=personsAtDate(dateIso);const rec=currentSheet.records[dateIso]||{};
+  const unset=persons.filter(p=>!rec[p.id]);
+  if(unset.length>0&&!confirm(`${unset.length} personne(s) sans statut. Continuer ?`))return;
+  if(!currentSheet.records[dateIso])currentSheet.records[dateIso]={};
+  currentSheet.records[dateIso].__validated=true;
+  showLoader();await saveSheet();hideLoader();
+  toast('Appel validé ✓');renderAppel();
+}
+function getPersonAlert(personId){
+  const allDays=getAllCallDays().filter(d=>personsAtDate(d).find(p=>p.id===personId));
+  let consecutive=0,totalAbsent=0,totalDays=0;
+  allDays.forEach(d=>{const st=(currentSheet.records[d]||{})[personId];if(st){totalDays++;if(st==='absent'){totalAbsent++;consecutive++;}else consecutive=0;}});
+  if(consecutive>=3)return'streak';if(totalDays>=5&&totalAbsent/totalDays>=0.5)return'freq';return null;
+}
+
+// ── HISTORIQUE ────────────────────────────────────────────────
+function renderHistorique(){
+  const el=document.getElementById('historiqueContent');
+  const allDays=getAllCallDays();
+  if(allDays.length===0){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📚</div>Aucun historique</div>`;return;}
+  const todayIso=today();let html='';
+  [...allDays].reverse().forEach(dateIso=>{
+    const rec=currentSheet.records[dateIso]||{};const persons=personsAtDate(dateIso);
+    const done=rec.__validated||Object.keys(rec).filter(k=>k!=='__validated').length>0;
+    const isPast=dateIso<todayIso;const isToday2=dateIso===todayIso;
+    let p=0,a=0,j=0;
+    persons.forEach(pe=>{const st=rec[pe.id];if(st==='present')p++;else if(st==='absent')a++;else if(st==='justified')j++;});
+    const statusBadge=done?`<span class="badge-sm badge-green">Fait</span>`:(isPast?`<span class="badge-sm badge-orange">Manqué</span>`:`<span class="badge-sm badge-gray">À faire</span>`);
+    html+=`<div class="history-item"><div class="history-header" onclick="toggleHistory(this)">
+      <div class="history-date">${fmtDate(dateIso)}</div>
+      <div class="history-badges">
+        ${done?`<span class="badge-sm badge-green">✓ ${p}</span><span class="badge-sm badge-red">✗ ${a}</span>${j>0?`<span class="badge-sm badge-purple">📋 ${j}</span>`:''}`:statusBadge}
+        ${(isPast&&!done)?`<button class="btn btn-sm btn-outline" onclick="event.stopPropagation();doMissedAppel('${dateIso}')">Faire l'appel</button>`:''}
+        ${(isToday2&&!done)?`<button class="btn btn-sm" onclick="event.stopPropagation();switchTab('appel',document.querySelectorAll('.tab')[0])">Faire l'appel</button>`:''}
+      </div></div>
+      <div class="history-body" id="hbody_${dateIso}">`;
+    if(done){persons.forEach(p=>{const st=rec[p.id]||'';const stHtml=st==='present'?`<span style="color:var(--green)">✓ Présent</span>`:st==='absent'?`<span style="color:var(--red)">✗ Absent</span>`:st==='justified'?`<span style="color:var(--accent)">📋 Justifiée</span>`:`<span style="color:var(--muted)">—</span>`;html+=`<div class="history-person-row"><span>${p.name}</span><div style="display:flex;align-items:center;gap:8px">${stHtml}<button class="btn btn-sm btn-ghost" style="padding:4px 10px;font-size:11px;margin-top:0" onclick="editRecord('${dateIso}','${p.id}')">Modifier</button></div></div>`;});}
+    else{html+=`<div style="padding:10px 0;color:var(--muted);font-size:13px">${isPast?'Appel manqué — cliquez "Faire l\'appel"':'Appel pas encore effectué'}</div>`;}
+    html+=`</div></div>`;
+  });
+  el.innerHTML=html;
+}
+function toggleHistory(header){header.nextElementSibling.classList.toggle('open');}
+function doMissedAppel(dateIso){switchTab('appel',document.querySelectorAll('.tab')[0]);setTimeout(()=>{const el=document.getElementById(`appelDay_${dateIso}`);if(el)el.scrollIntoView({behavior:'smooth'});},100);}
+function editRecord(dateIso,personId){
+  const rec=currentSheet.records[dateIso]||{};const person=currentSheet.persons.find(p=>p.id===personId);const cur=rec[personId]||'';
+  openModal(`<div class="modal-title">Modifier — ${person?.name}</div><div style="font-size:12px;color:var(--muted);margin-bottom:18px">${fmtDate(dateIso)}</div><div style="display:flex;flex-direction:column;gap:10px">
+    <button class="btn ${cur==='present'?'':'btn-outline'}" onclick="applyEdit('${dateIso}','${personId}','present')">✓ Présent</button>
+    <button class="btn btn-danger" style="${cur==='absent'?'':'background:transparent;border:1px solid var(--red);color:var(--red)'}" onclick="applyEdit('${dateIso}','${personId}','absent')">✗ Absent</button>
+    <button class="btn btn-outline" onclick="applyEdit('${dateIso}','${personId}','justified')">📋 Absence justifiée</button>
+    <button class="btn btn-ghost" onclick="closeModal()">Annuler</button></div>`);
+}
+async function applyEdit(dateIso,personId,status){
+  if(!currentSheet.records[dateIso])currentSheet.records[dateIso]={};
+  currentSheet.records[dateIso][personId]=status;
+  showLoader();await saveSheet();hideLoader();
+  closeModal();toast('Modification enregistrée ✓');renderHistorique();
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+function renderStats(){
+  const el=document.getElementById('statsContent');
+  const allDays=getAllCallDays().filter(d=>currentSheet.records[d]);
+  const persons=currentSheet.persons.filter(p=>p.active!==false);
+  if(allDays.length===0){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📊</div>Pas encore de données</div>`;return;}
+  let totalP=0,totalA=0,totalJ=0;const ps={};
+  persons.forEach(p=>{ps[p.id]={present:0,absent:0,justified:0,total:0};});
+  allDays.forEach(d=>{const rec=currentSheet.records[d];personsAtDate(d).forEach(p=>{const st=rec[p.id];if(!ps[p.id])return;if(st){ps[p.id].total++;if(st==='present'){ps[p.id].present++;totalP++;}else if(st==='absent'){ps[p.id].absent++;totalA++;}else if(st==='justified'){ps[p.id].justified++;totalJ++;}}});});
+  let html=`<div class="stats-grid"><div class="stat-card"><div class="stat-value" style="color:var(--green)">${totalP}</div><div class="stat-label">Présences</div></div><div class="stat-card"><div class="stat-value" style="color:var(--red)">${totalA}</div><div class="stat-label">Absences</div></div><div class="stat-card"><div class="stat-value" style="color:var(--accent)">${totalJ}</div><div class="stat-label">Justifiées</div></div><div class="stat-card"><div class="stat-value">${allDays.length}</div><div class="stat-label">Appels faits</div></div></div><div class="card"><div class="card-header"><div class="card-title">Détail par personne</div></div>`;
+  persons.forEach(p=>{const s=ps[p.id];if(!s)return;const alert=getPersonAlert(p.id);const pct=s.total>0?Math.round(s.present/s.total*100):0;html+=`<div class="person-stat-row"><div class="person-stat-name">${p.name}</div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="badge-sm badge-green">✓ ${s.present}</span><span class="badge-sm badge-red">✗ ${s.absent}</span><span class="badge-sm badge-purple">📋 ${s.justified}</span><span class="badge-sm badge-gray">${pct}%</span>${alert==='streak'?`<span class="danger-badge">3 absences consécutives</span>`:''}${alert==='freq'?`<span class="alert-badge">Souvent absent</span>`:''}</div></div>`;});
+  html+=`</div><button class="btn btn-outline btn-sm" style="margin-top:4px" onclick="exportExcel()">📥 Exporter Excel</button>`;
+  el.innerHTML=html;
+}
+function exportExcel(){
+  const allDays=getAllCallDays();const persons=currentSheet.persons.filter(p=>p.active!==false);
+  const headers=['Nom',...allDays.map(d=>fmtDateShort(d))];
+  const rows=persons.map(p=>{const row=[p.name];allDays.forEach(d=>{const st=(currentSheet.records[d]||{})[p.id];row.push(st==='present'?'P':st==='absent'?'A':st==='justified'?'J':'');});return row;});
+  const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Présences');
+  XLSX.writeFile(wb,`presences_${currentSheet.name}_${today()}.xlsx`);toast('Export téléchargé ✓');
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────
+function renderAdmin(){
+  const el=document.getElementById('adminContent');const cfg=currentSheet.config;const persons=currentSheet.persons;const selectedDays=cfg.days||[];
+  let html=`<div class="card"><div class="card-header"><div class="card-title">👥 Personnes</div></div><div class="name-list" id="nameList">`;
+  persons.forEach(p=>{const active=p.active!==false;html+=`<div class="name-item" id="nameItem_${p.id}"><input type="text" value="${p.name}" id="nameInput_${p.id}" readonly><button class="btn btn-sm btn-ghost" style="margin-top:0" onclick="editName('${p.id}')">✏️</button><button class="btn btn-sm ${active?'btn-danger':'btn-outline'}" style="margin-top:0" onclick="togglePerson('${p.id}')">${active?'Retirer':'Réactiver'}</button></div>`;});
+  html+=`</div><div style="margin-top:14px"><div class="config-section-title mb8">Ajouter une personne</div>
+    <div class="input-row mb8"><input type="text" id="newPersonName" placeholder="Prénom Nom"><input type="date" id="newPersonStart" value="${today()}" style="width:auto"><button class="btn btn-sm" onclick="addPerson()">Ajouter</button></div>
+    <div class="upload-zone" onclick="document.getElementById('xlsxInput').click()" ondragover="this.classList.add('drag');event.preventDefault()" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)"><div class="upload-icon">📂</div><div class="upload-text">Importer Excel ou CSV</div><div class="upload-sub">Une colonne avec les noms</div></div>
+    <input type="file" id="xlsxInput" accept=".xlsx,.xls,.csv" style="display:none" onchange="importFile(event)">
+    <div id="importMsg" style="display:none;margin-top:8px"></div></div></div>
+
+  <div class="card"><div class="card-header"><div class="card-title">📅 Jours d'appel</div></div>
+    <div class="days-grid mb12">${DAY_NAMES.map((d,i)=>`<button class="day-btn ${selectedDays.includes(i)?'selected':''}" onclick="toggleDay(${i})">${d}</button>`).join('')}</div>
+    <div class="config-section-title">Horaires</div>
+    <div class="time-row mb8"><input type="time" id="timeStart" value="${cfg.timeStart||'18:00'}"><span>à</span><input type="time" id="timeEnd" value="${cfg.timeEnd||'20:00'}"></div>
+    <button class="btn btn-sm btn-outline" onclick="saveHours()">Sauvegarder les horaires</button>
+    <div id="hoursMsg" style="display:none;margin-top:8px"></div></div>
+
+  <div class="card"><div class="card-header"><div class="card-title">🗓 Période de l'atelier</div></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+      <div class="field" style="flex:1;min-width:140px;margin-bottom:0"><label>Date de début</label><input type="date" id="yearStart" value="${cfg.yearStart||today()}"></div>
+      <div class="field" style="flex:1;min-width:140px;margin-bottom:0"><label>Date de fin</label><input type="date" id="yearEnd" value="${cfg.yearEnd||''}"></div>
+    </div>
+    <button class="btn btn-sm btn-outline" onclick="savePeriod()">Sauvegarder la période</button>
+    <div id="periodMsg" style="display:none;margin-top:8px"></div></div>
+
+  <div class="card"><div class="card-header"><div class="card-title">🏖 Vacances scolaires</div></div>
+    <div class="field"><label>Zone</label><select id="zoneSelect"><option value="A" ${cfg.zone==='A'?'selected':''}>Zone A</option><option value="B" ${cfg.zone==='B'?'selected':''}>Zone B</option><option value="C" ${cfg.zone==='C'?'selected':''}>Zone C</option></select></div>
+    <div class="zone-list mb12">${(cfg.vacances||[]).map((v,i)=>`<div class="zone-item"><span>${fmtDateShort(v.start)} → ${fmtDateShort(v.end)}</span><button class="btn btn-sm btn-ghost" style="margin-top:0" onclick="removeVacance(${i})">✕</button></div>`).join('')}</div>
+    <div class="time-row"><input type="date" id="vacStart" class="date-input" style="width:auto;flex:1"><span>→</span><input type="date" id="vacEnd" class="date-input" style="width:auto;flex:1"><button class="btn btn-sm" onclick="addVacance()">Ajouter</button></div></div>
+
+  <div class="card" style="border-color:rgba(255,71,87,.3)"><div class="card-header"><div class="card-title" style="color:var(--red)">⚠️ Zone dangereuse</div></div>
+    <button class="btn btn-danger btn-sm" onclick="resetSheet()">Réinitialiser toutes les données</button>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px">Supprime tous les enregistrements et personnes. Irréversible.</div></div>`;
+  el.innerHTML=html;
+}
+
+async function toggleDay(i){const cfg=currentSheet.config;if(!cfg.days)cfg.days=[];const idx=cfg.days.indexOf(i);if(idx===-1)cfg.days.push(i);else cfg.days.splice(idx,1);showLoader();await saveSheet();hideLoader();toast('Jour mis à jour ✓');renderAdmin();}
+async function saveHours(){currentSheet.config.timeStart=document.getElementById('timeStart').value;currentSheet.config.timeEnd=document.getElementById('timeEnd').value;showLoader();await saveSheet();hideLoader();showMsg('hoursMsg','Horaires sauvegardés ✓','success');toast('Horaires sauvegardés ✓');setTimeout(()=>hideMsg('hoursMsg'),3000);}
+async function savePeriod(){currentSheet.config.yearStart=document.getElementById('yearStart').value;currentSheet.config.yearEnd=document.getElementById('yearEnd').value;showLoader();await saveSheet();hideLoader();showMsg('periodMsg','Période sauvegardée ✓','success');toast('Période sauvegardée ✓');setTimeout(()=>hideMsg('periodMsg'),3000);renderAdmin();}
+async function addVacance(){const start=document.getElementById('vacStart').value;const end=document.getElementById('vacEnd').value;if(!start||!end)return;if(!currentSheet.config.vacances)currentSheet.config.vacances=[];currentSheet.config.vacances.push({start,end});showLoader();await saveSheet();hideLoader();toast('Vacances ajoutées ✓');renderAdmin();}
+async function removeVacance(i){currentSheet.config.vacances.splice(i,1);showLoader();await saveSheet();hideLoader();toast('Supprimé ✓');renderAdmin();}
+async function addPerson(){const name=document.getElementById('newPersonName').value.trim();const startDate=document.getElementById('newPersonStart').value||today();if(!name)return;currentSheet.persons.push({id:'p_'+Date.now(),name,startDate,active:true});showLoader();await saveSheet();hideLoader();document.getElementById('newPersonName').value='';toast(`${name} ajouté(e) ✓`);renderAdmin();}
+async function togglePerson(id){const p=currentSheet.persons.find(p=>p.id===id);if(!p)return;p.active=p.active===false?true:false;showLoader();await saveSheet();hideLoader();toast(p.active?'Réactivé ✓':'Retiré ✓');renderAdmin();}
+function editName(id){const input=document.getElementById(`nameInput_${id}`);const item=document.getElementById(`nameItem_${id}`);if(input.readOnly){input.readOnly=false;input.focus();item.classList.add('editing');input.onblur=()=>saveName(id);input.onkeydown=e=>{if(e.key==='Enter')saveName(id);};}}
+async function saveName(id){const input=document.getElementById(`nameInput_${id}`);if(!input)return;const item=document.getElementById(`nameItem_${id}`);const p=currentSheet.persons.find(p=>p.id===id);if(p&&input.value.trim())p.name=input.value.trim();input.readOnly=true;if(item)item.classList.remove('editing');showLoader();await saveSheet();hideLoader();toast('Nom modifié ✓');}
+async function resetSheet(){if(!confirm('Réinitialiser toutes les données ? Irréversible.'))return;currentSheet.persons=[];currentSheet.records={};showLoader();await saveSheet();hideLoader();toast('Données réinitialisées','error');renderAdmin();renderAppel();}
+
+// ── IMPORT ────────────────────────────────────────────────────
+function handleDrop(e){e.preventDefault();document.querySelector('.upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processFile(f);}
+function importFile(e){const f=e.target.files[0];if(f)processFile(f);e.target.value='';}
+function processFile(file){
+  const ext=file.name.split('.').pop().toLowerCase();const reader=new FileReader();
+  reader.onload=async(e)=>{
+    let names=[];
+    try{
+      if(ext==='csv')names=e.target.result.split(/\r?\n/).map(l=>l.split(/[;,]/)[0].trim()).filter(n=>n&&n.length>0);
+      else{const data=new Uint8Array(e.target.result);const wb=XLSX.read(data,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const json=XLSX.utils.sheet_to_json(ws,{header:1});json.forEach(row=>{const v=row[0];if(v&&String(v).trim())names.push(String(v).trim());});}
+      if(names[0]&&/^(nom|name|prénom|prenom)$/i.test(names[0]))names.shift();
+      if(names.length===0){showMsg('importMsg','Aucun nom trouvé','error');return;}
+      const startDate=today();let added=0;
+      names.forEach(name=>{if(!currentSheet.persons.find(p=>p.name.toLowerCase()===name.toLowerCase())){currentSheet.persons.push({id:'p_'+Date.now()+'_'+Math.random(),name,startDate,active:true});added++;}});
+      showLoader();await saveSheet();hideLoader();
+      showMsg('importMsg',`${added} personne(s) importée(s) sur ${names.length}`,'success');
+      toast(`${added} personne(s) importée(s) ✓`);renderAdmin();
+    }catch(err){showMsg('importMsg','Erreur : '+err.message,'error');}
+  };
+  if(ext==='csv')reader.readAsText(file);else reader.readAsArrayBuffer(file);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+goAccueil();
+</script>
+</body>
+</html>
