@@ -238,7 +238,7 @@ body{min-height:100vh;background-attachment:fixed;background-image:radial-gradie
 //   {id}:persons   → [{id, name, startDate, active}]
 //   {id}:rec:{date} → {personId: status, __validated}
 // ═══════════════════════════════════════════════════════════════
-const API = 'https://script.google.com/macros/s/AKfycbxfPAT8imEI8pipJJK4eeL-EFJrcsG9QWstMTlIHp7WW4YingZ2TlrpG3lNxYYRBuLb/exec';
+const API = 'https://script.google.com/macros/s/AKfycbyi_hWVgBUjH2c1FLcC570gl5ld5egaNYcFs-4emZr4Jy9l0DW3XBqCtMRr_XtjmG4I/exec';
 
 // ── LOCAL STORAGE CACHE (instantané) ─────────────
 const Cache = {
@@ -263,9 +263,17 @@ async function api(params){
 
 // ── SAVE : local immédiat + Sheets en arrière-plan ─
 const Save = {
-  config(){ Cache.set(S.id+':config',S.config); api({action:'saveConfig',id:S.id,data:S.config}); },
+  config(){
+    // Sanitize heures (HH:mm) et dates (YYYY-MM-DD) avant sauvegarde
+    function fixTime(t){if(!t)return'';const s=String(t);const m=s.match(/(\d{1,2}):(\d{2})/);return m?m[1].padStart(2,'0')+':'+m[2]:'18:00';}
+    function fixDate(d){if(!d)return'';try{const dt=new Date(d);if(isNaN(dt))return String(d).slice(0,10);return isoDate(dt);}catch{return '';}}
+    const cfg={...S.config,timeStart:fixTime(S.config.timeStart),timeEnd:fixTime(S.config.timeEnd),yearStart:fixDate(S.config.yearStart),yearEnd:fixDate(S.config.yearEnd)};
+    S.config=cfg;
+    Cache.set(S.id+':config',cfg);
+    api({action:'saveConfig',id:S.id,data:cfg});
+  },
   persons(){ Cache.set(S.id+':persons',S.persons); api({action:'savePersonnes',id:S.id,data:S.persons}); },
-  rec(date){ Cache.set(S.id+':rec:'+date,S.records[date]||{}); api({action:'saveAppel',id:S.id,date,data:S.records[date]||{}}); }
+  rec(date){ Cache.set(S.id+':rec:'+date,S.records[date]||{}); } // sync vers Sheets uniquement à la validation
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -399,7 +407,6 @@ async function loginSheet(){
     let persons = Cache.get(id+':persons');
 
     if(!config || !persons){
-      // Pas en cache — charger depuis Sheets
       const [cfgSheet, perSheet] = await Promise.all([
         api({action:'getConfig', id}),
         api({action:'getPersonnes', id})
@@ -410,22 +417,36 @@ async function loginSheet(){
       if(persons) Cache.set(id+':persons', persons);
     }
 
+    // Sanitize config (Sheets peut renvoyer des dates ISO pour les heures)
+    if(config){
+      function fixT(t){if(!t)return'18:00';const s=String(t);const m=s.match(/(\d{1,2}):(\d{2})/);return m?m[1].padStart(2,'0')+':'+m[2]:'18:00';}
+      function fixD(d){if(!d)return'';try{const dt=new Date(d);if(isNaN(dt))return String(d).slice(0,10);const y=dt.getFullYear();const mo=String(dt.getMonth()+1).padStart(2,'0');const day=String(dt.getDate()+1).padStart(2,'0');return`${y}-${mo}-${day}`;}catch{return'';}}
+      config.timeStart=fixT(config.timeStart);
+      config.timeEnd=fixT(config.timeEnd);
+      if(config.yearStart)config.yearStart=config.yearStart.slice(0,10);
+      if(config.yearEnd)config.yearEnd=config.yearEnd.slice(0,10);
+    }
+
     S={id, name:meta.name, pwd:meta.pwd,
        config:config||{days:[],timeStart:'18:00',timeEnd:'20:00',yearStart:today(),yearEnd:'',vacances:[]},
        persons:persons||[], records:{}};
 
-    // Charger les records depuis cache local
-    const callDays = getCallDays();
-    callDays.forEach(d=>{
-      const cached = Cache.get(id+':rec:'+d);
-      if(cached) S.records[d] = cached;
-    });
-
-    // Sync Sheets en arrière-plan pour avoir les données à jour
-    api({action:'getAppels', id}).then(records=>{
-      if(!records) return;
-      Object.keys(records).forEach(d=>{ S.records[d]=records[d]; Cache.set(id+':rec:'+d, records[d]); });
-    }).catch(e=>console.warn(e));
+    // Charger les records depuis Sheets EN PRIORITÉ
+    const sheetsRecords = await api({action:'getAppels', id});
+    if(sheetsRecords){
+      // Sheets = source de vérité
+      Object.keys(sheetsRecords).forEach(d=>{
+        S.records[d]=sheetsRecords[d];
+        Cache.set(id+':rec:'+d, sheetsRecords[d]);
+      });
+    } else {
+      // Fallback : cache local si Sheets indisponible
+      const callDays = getCallDays();
+      callDays.forEach(d=>{
+        const cached = Cache.get(id+':rec:'+d);
+        if(cached) S.records[d] = cached;
+      });
+    }
 
     loader(false);enterApp();
   }catch(e){loader(false);showMsg('authMsg','Erreur : '+e.message,'error');}
@@ -553,7 +574,8 @@ function toggleCancel(date){
     // Effacer tous les statuts et marquer annulé+validé
     S.records[date]={__cancelled:true,__validated:true};
   }
-  Save.rec(date);
+  Cache.set(S.id+':rec:'+date, S.records[date]||{});
+  api({action:'saveAppel',id:S.id,date,data:S.records[date]||{}}).catch(e=>console.error(e));
   renderAppel();
   toast(S.records[date]&&S.records[date].__cancelled?'Séance annulée ✓':'Séance rétablie ✓');
 }
@@ -564,8 +586,10 @@ function valider(date){
   if(unset.length&&!confirm(`${unset.length} personne(s) sans statut. Continuer ?`))return;
   if(!S.records[date])S.records[date]={};
   S.records[date].__validated=true;
+  Cache.set(S.id+':rec:'+date, S.records[date]);
+  // Sync Sheets uniquement ici
+  api({action:'saveAppel',id:S.id,date,data:S.records[date]}).catch(e=>console.error(e));
   toast('Appel validé ✓');renderAppel();
-  Save.rec(date).catch(e=>console.error(e));
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -632,8 +656,9 @@ function editRec(date,pid){
 function applyRec(date,pid,status){
   if(!S.records[date])S.records[date]={};
   S.records[date][pid]=status;
+  Cache.set(S.id+':rec:'+date, S.records[date]);
+  api({action:'saveAppel',id:S.id,date,data:S.records[date]}).catch(e=>console.error(e));
   closeModal();toast('Modification enregistrée ✓');renderHistorique();
-  Save.rec(date).catch(e=>console.error(e));
 }
 
 // ═══════════════════════════════════════════════════════════════
