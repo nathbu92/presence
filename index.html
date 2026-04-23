@@ -7,40 +7,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0a0f0a;--surface:#111a11;--surface2:#182018;--border:#243024;
-  --accent:#43e97b;--accent2:#00c6ff;--green:#43e97b;--orange:#f7971e;
-  --red:#ff4757;--text:#f0f8f0;--muted:#6b8a6b;--radius:10px;
-}
+:root{--bg:#0a0f0a;--surface:#111a11;--surface2:#182018;--border:#243024;--accent:#43e97b;--accent2:#00c6ff;--green:#43e97b;--orange:#f7971e;--red:#ff4757;--text:#f0f8f0;--muted:#6b8a6b;--r:10px;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
 body{min-height:100vh;background-attachment:fixed;background-image:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(67,233,123,.05) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(0,198,255,.04) 0%,transparent 60%);}
 ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--surface);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-
-/* VIEWS */
 .view{display:none;min-height:100vh;padding:24px 16px;}.view.active{display:block;}
-#viewAccueil,#viewAuth{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
-#viewAccueil.active,#viewAuth.active{display:flex;}
-#viewApp{display:none;padding:0;}#viewApp.active{display:block;}
-
+#vAccueil,#vAuth{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+#vAccueil.active,#vAuth.active{display:flex;}
+#vApp{display:none;padding:0;}#vApp.active{display:block;}
 /* ACCUEIL */
 .logo-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 8px 32px rgba(67,233,123,.2);}
-.logo-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--accent) 60%,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--accent) 60%,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;}
 .logo-sub{color:var(--muted);font-size:13px;margin-top:4px;text-align:center;}
-.accueil-cards{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:560px;width:100%;margin-top:32px;}
-.accueil-card{flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;cursor:pointer;transition:all .2s;text-align:center;}
-.accueil-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(67,233,123,.12);}
-.accueil-card .ci{font-size:32px;margin-bottom:12px;}
-.accueil-card .ct{font-size:16px;font-weight:700;margin-bottom:4px;}
-.accueil-card .cd{font-size:12px;color:var(--muted);}
-
+.acc-cards{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:560px;width:100%;margin-top:32px;}
+.acc-card{flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;cursor:pointer;transition:all .2s;text-align:center;}
+.acc-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(67,233,123,.12);}
+.acc-card .ci{font-size:32px;margin-bottom:12px;}
+.acc-card .ct{font-size:16px;font-weight:700;margin-bottom:4px;}
+.acc-card .cd{font-size:12px;color:var(--muted);}
 /* AUTH */
 .auth-wrap{width:100%;max-width:400px;}
-.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;animation:fadeUp .3s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:32px;animation:fup .3s ease;}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .auth-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:4px;}
 .auth-sub{font-size:12px;color:var(--muted);margin-bottom:24px;}
-
 /* FORM */
 .field{margin-bottom:16px;}
 .field label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-family:'JetBrains Mono',monospace;}
@@ -49,7 +40,6 @@ body{min-height:100vh;background-attachment:fixed;background-image:radial-gradie
 .field input::placeholder{color:var(--muted);}
 .pwd-wrap{position:relative;}.pwd-wrap input{padding-right:42px;}
 .pwd-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;color:var(--muted);font-size:16px;}
-
 /* BUTTONS */
 .btn{display:block;width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0a0f0a;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:12px 16px;cursor:pointer;transition:all .2s;text-align:center;}
 .btn:hover{filter:brightness(1.08);}
@@ -58,67 +48,58 @@ body{min-height:100vh;background-attachment:fixed;background-image:radial-gradie
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);margin-top:10px;}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);filter:none;}
 .btn-danger{background:var(--red);color:#fff;}
-.btn-danger:hover{filter:brightness(1.1);}
 .btn-sm{padding:7px 14px;font-size:12px;width:auto;display:inline-block;margin-top:0;}
 .btn-outline{background:transparent;border:1px solid var(--accent);color:var(--accent);}
 .btn-outline:hover{background:var(--accent);color:#0a0f0a;filter:none;}
-
-/* MESSAGES */
+/* MSG */
 .msg{font-size:12px;padding:10px 14px;border-radius:8px;margin-bottom:14px;border-left:3px solid;}
 .msg.error{background:rgba(255,71,87,.08);border-color:var(--red);color:var(--red);}
 .msg.success{background:rgba(67,233,123,.08);border-color:var(--green);color:var(--green);}
 .msg.info{background:rgba(0,198,255,.08);border-color:var(--accent2);color:var(--accent2);}
-
 /* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-size:13px;font-weight:500;z-index:999;transition:all .3s;white-space:nowrap;pointer-events:none;opacity:0;}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-#toast.t-success{border-color:var(--accent);color:var(--accent);}
-#toast.t-error{border-color:var(--red);color:var(--red);}
-
+#toast.ok{border-color:var(--accent);color:var(--accent);}
+#toast.err{border-color:var(--red);color:var(--red);}
 /* LOADER */
-#loader{display:none;position:fixed;inset:0;background:rgba(10,15,10,.7);z-index:500;align-items:center;justify-content:center;}
+#loader{display:none;position:fixed;inset:0;background:rgba(10,15,10,.8);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
 #loader.show{display:flex;}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent2);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* APP HEADER */
-.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.loader-msg{font-size:13px;color:var(--muted);}
+/* APP */
+.app-hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .app-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .conn-info{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
-
-/* TABS */
-.tab-bar{display:flex;gap:4px;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 12px 0;overflow-x:auto;}
+.tabs{display:flex;gap:4px;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 12px 0;overflow-x:auto;}
 .tab{padding:8px 14px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-radius:8px 8px 0 0;border:1px solid transparent;border-bottom:none;white-space:nowrap;transition:all .2s;}
 .tab:hover{color:var(--text);background:var(--surface2);}
 .tab.active{color:var(--accent);background:var(--bg);border-color:var(--border);}
-.tab-content{display:none;padding:16px;max-width:860px;margin:0 auto;}
-.tab-content.active{display:block;}
-
+.tc{display:none;padding:16px;max-width:860px;margin:0 auto;}
+.tc.active{display:block;}
 /* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
-.card-title{font-size:15px;font-weight:700;margin-bottom:14px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;}
+.card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px;}
+.card-title{font-size:15px;font-weight:700;}
 .card-sub{font-size:12px;color:var(--muted);margin-top:2px;}
-.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px;}
-
 /* PERSON ROW */
-.person-list{display:flex;flex-direction:column;gap:8px;}
-.person-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:border-color .2s;}
-.person-row.present{border-color:rgba(67,233,123,.4);}
-.person-row.absent{border-color:rgba(255,71,87,.4);}
-.person-row.justified{border-color:rgba(0,198,255,.4);}
-.person-name{flex:1;min-width:80px;font-size:14px;font-weight:500;}
-.person-alert{font-size:11px;color:var(--orange);}
-.status-btns{display:flex;gap:6px;flex-wrap:wrap;}
-.status-btn{padding:6px 10px;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;}
-.status-btn:hover{border-color:var(--text);color:var(--text);}
-.status-btn.ap{background:rgba(67,233,123,.15);border-color:var(--green);color:var(--green);}
-.status-btn.aa{background:rgba(255,71,87,.15);border-color:var(--red);color:var(--red);}
-.status-btn.aj{background:rgba(0,198,255,.15);border-color:var(--accent2);color:var(--accent2);}
-
+.plist{display:flex;flex-direction:column;gap:8px;}
+.prow{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:border-color .2s;}
+.prow.present{border-color:rgba(67,233,123,.4);}
+.prow.absent{border-color:rgba(255,71,87,.4);}
+.prow.justified{border-color:rgba(0,198,255,.4);}
+.pname{flex:1;min-width:80px;font-size:14px;font-weight:500;}
+.palert{font-size:11px;color:var(--orange);}
+.sbtns{display:flex;gap:6px;flex-wrap:wrap;}
+.sbtn{padding:6px 10px;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;}
+.sbtn:hover{border-color:var(--text);color:var(--text);}
+.sbtn.ap{background:rgba(67,233,123,.15);border-color:var(--green);color:var(--green);}
+.sbtn.aa{background:rgba(255,71,87,.15);border-color:var(--red);color:var(--red);}
+.sbtn.aj{background:rgba(0,198,255,.15);border-color:var(--accent2);color:var(--accent2);}
 /* HISTORY */
-.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;}
-.history-header{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:8px;flex-wrap:wrap;}
-.history-date{font-size:13px;font-weight:600;}
+.hitem{background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.hhdr{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:8px;flex-wrap:wrap;}
+.hdate{font-size:13px;font-weight:600;}
 .hbadges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;white-space:nowrap;}
 .bg{background:rgba(67,233,123,.15);color:var(--green);}
@@ -126,177 +107,186 @@ body{min-height:100vh;background-attachment:fixed;background-image:radial-gradie
 .bb{background:rgba(0,198,255,.15);color:var(--accent2);}
 .bo{background:rgba(247,151,30,.15);color:var(--orange);}
 .bm{background:rgba(107,138,107,.15);color:var(--muted);}
-.history-body{display:none;padding:0 14px 12px;border-top:1px solid var(--border);}
-.history-body.open{display:block;}
+.hbody{display:none;padding:0 14px 12px;border-top:1px solid var(--border);}
+.hbody.open{display:block;}
 .hprow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(36,48,36,.5);font-size:13px;gap:8px;flex-wrap:wrap;}
 .hprow:last-child{border-bottom:none;}
-
 /* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px;}
-.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
-.stat-value{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;}
-.stat-label{font-size:11px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace;}
-.pstat-row{display:flex;align-items:center;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;gap:8px;font-size:13px;flex-wrap:wrap;}
-.pstat-name{flex:1;min-width:80px;font-weight:500;}
-.bar-wrap{width:80px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
-.bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
-
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px;}
+.scard{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+.sval{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;}
+.slbl{font-size:11px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace;}
+.psrow{display:flex;align-items:center;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;gap:8px;font-size:13px;flex-wrap:wrap;}
+.psname{flex:1;min-width:80px;font-weight:500;}
+.bw{width:80px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.bbar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
 /* ADMIN */
-.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;}
-.days-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
-.day-btn{padding:8px 14px;font-size:13px;font-weight:500;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;}
-.day-btn:hover{border-color:var(--accent);color:var(--accent);}
-.day-btn.sel{background:rgba(67,233,123,.15);border-color:var(--accent);color:var(--accent);}
+.stitle{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;}
+.dgrid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.dbtn{padding:8px 14px;font-size:13px;font-weight:500;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;}
+.dbtn:hover{border-color:var(--accent);color:var(--accent);}
+.dbtn.sel{background:rgba(67,233,123,.15);border-color:var(--accent);color:var(--accent);}
 .zone-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:6px;}
-.name-item{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:6px;cursor:grab;transition:border-color .2s;}
-.name-item:hover{border-color:var(--accent);}
-.name-item.dragging{opacity:.4;}
-.name-item.drag-over{border-color:var(--accent);background:rgba(67,233,123,.06);}
+.nitem{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:6px;cursor:grab;transition:border-color .2s;}
+.nitem:hover{border-color:var(--accent);}
+.nitem.dragging{opacity:.4;}
+.nitem.dragover{border-color:var(--accent);background:rgba(67,233,123,.06);}
 .drag-handle{color:var(--muted);font-size:14px;cursor:grab;user-select:none;flex-shrink:0;}
-.name-item input{flex:1;background:transparent;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;min-width:0;}
-.name-item.editing{border-color:var(--accent);}
-.input-row{display:flex;gap:8px;flex-wrap:wrap;}
-.input-row input{flex:1;min-width:100px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;}
-.input-row input:focus{border-color:var(--accent);}
-.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-top:10px;}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(67,233,123,.03);}
-.time-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-.time-input{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
-.time-input:focus{border-color:var(--accent);}
-.date-input{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;}
-.date-input:focus{border-color:var(--accent);}
-
+.nitem input{flex:1;background:transparent;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;min-width:0;}
+.nitem.editing{border-color:var(--accent);}
+.irow{display:flex;gap:8px;flex-wrap:wrap;}
+.irow input{flex:1;min-width:100px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;}
+.irow input:focus{border-color:var(--accent);}
+.uzone{border:2px dashed var(--border);border-radius:var(--r);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-top:10px;}
+.uzone:hover,.uzone.drag{border-color:var(--accent);background:rgba(67,233,123,.03);}
+.trow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.tinput{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+.tinput:focus{border-color:var(--accent);}
+.dinput{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;}
+.dinput:focus{border-color:var(--accent);}
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:16px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:400px;animation:fadeUp .2s ease;}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;width:100%;max-width:400px;animation:fup .2s ease;}
 .modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:18px;}
-
 /* MISC */
 .missed-alert{background:rgba(247,151,30,.06);border:1px solid rgba(247,151,30,.25);border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--orange);}
 .today-ok{background:rgba(67,233,123,.06);border:1px solid rgba(67,233,123,.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;}
 .empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:13px;}
-.empty-icon{font-size:32px;margin-bottom:10px;}
+.eicon{font-size:32px;margin-bottom:10px;}
 .mb8{margin-bottom:8px;}.mb12{margin-bottom:12px;}.mb16{margin-bottom:16px;}
-.flex-gap{display:flex;gap:12px;flex-wrap:wrap;}
+.fgap{display:flex;gap:12px;flex-wrap:wrap;}
 </style>
 </head>
 <body>
 <div id="toast"></div>
-<div id="loader"><div class="spinner"></div></div>
+<div id="loader"><div class="spinner"></div><div class="loader-msg" id="loaderMsg">Chargement...</div></div>
 
 <!-- ACCUEIL -->
-<div id="viewAccueil" class="view">
-  <div style="text-align:center">
-    <div class="logo-icon">📋</div>
-    <div class="logo-title">GESTION DES PRÉSENCES</div>
-    <div class="logo-sub">Logiciel de suivi des présences</div>
-  </div>
-  <div class="accueil-cards">
-    <div class="accueil-card" onclick="showAuth('login')"><div class="ci">🔑</div><div class="ct">Se connecter</div><div class="cd">Accéder à une feuille existante</div></div>
-    <div class="accueil-card" onclick="showAuth('create')"><div class="ci">✨</div><div class="ct">Créer une feuille</div><div class="cd">Nouvelle feuille d'appel</div></div>
+<div id="vAccueil" class="view">
+  <div style="text-align:center"><div class="logo-icon">📋</div><div class="logo-title">GESTION DES PRÉSENCES</div><div class="logo-sub">Logiciel de suivi des présences</div></div>
+  <div class="acc-cards">
+    <div class="acc-card" onclick="showAuth('login')"><div class="ci">🔑</div><div class="ct">Se connecter</div><div class="cd">Accéder à une feuille existante</div></div>
+    <div class="acc-card" onclick="showAuth('create')"><div class="ci">✨</div><div class="ct">Créer une feuille</div><div class="cd">Nouvelle feuille d'appel</div></div>
   </div>
 </div>
 
 <!-- AUTH -->
-<div id="viewAuth" class="view">
+<div id="vAuth" class="view">
   <div class="auth-wrap">
-    <button class="btn btn-ghost btn-sm mb16" onclick="goAccueil()" style="margin-bottom:16px">← Retour</button>
+    <button class="btn btn-ghost btn-sm mb16" onclick="goHome()" style="margin-bottom:16px">← Retour</button>
     <div class="auth-box" id="authBox"></div>
   </div>
 </div>
 
 <!-- APP -->
-<div id="viewApp" class="view">
-  <div class="app-header">
-    <div>
-      <div class="app-logo">📋 <span id="hName">—</span></div>
-      <div class="conn-info" id="hInfo"></div>
-    </div>
+<div id="vApp" class="view">
+  <div class="app-hdr">
+    <div><div class="app-logo">📋 <span id="hName">—</span></div><div class="conn-info" id="hInfo"></div></div>
     <button class="btn btn-ghost btn-sm" onclick="disconnect()">Déconnexion</button>
   </div>
-  <div class="tab-bar">
+  <div class="tabs">
     <div class="tab active" onclick="switchTab('appel',this)">📞 Appel</div>
     <div class="tab" onclick="switchTab('historique',this)">📚 Historique</div>
     <div class="tab" onclick="switchTab('stats',this)">📊 Stats</div>
     <div class="tab" onclick="switchTab('admin',this)">⚙️ Admin</div>
   </div>
-  <div id="tabAppel" class="tab-content active"><div id="appelContent"></div></div>
-  <div id="tabHistorique" class="tab-content"><div id="historiqueContent"></div></div>
-  <div id="tabStats" class="tab-content"><div id="statsContent"></div></div>
-  <div id="tabAdmin" class="tab-content"><div id="adminContent"></div></div>
+  <div id="tcAppel" class="tc active"><div id="appelContent"></div></div>
+  <div id="tcHistorique" class="tc"><div id="historiqueContent"></div></div>
+  <div id="tcStats" class="tc"><div id="statsContent"></div></div>
+  <div id="tcAdmin" class="tc"><div id="adminContent"></div></div>
 </div>
 
-<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalBox"></div></div>
+<div class="modal-ov" id="modalOv"><div class="modal" id="modalBox"></div></div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// STORAGE — Google Sheets, une ligne par clé
-// Structure dans le sheet :
-//   {id}:meta      → {id, name, pwd}
-//   {id}:config    → {days, timeStart, timeEnd, yearStart, yearEnd, vacances}
-//   {id}:persons   → [{id, name, startDate, active}]
-//   {id}:rec:{date} → {personId: status, __validated}
-// ═══════════════════════════════════════════════════════════════
-const API = 'https://script.google.com/macros/s/AKfycbxfPAT8imEI8pipJJK4eeL-EFJrcsG9QWstMTlIHp7WW4YingZ2TlrpG3lNxYYRBuLb/exec';
+// ═══════════════════════════
+// CONFIG
+// ═══════════════════════════
+const API = 'https://script.google.com/macros/s/AKfycbz9feIAi2D5Db_Fb1alKLsIQWoiOinrvbrN0tfEsmhD3pugoIOjRxsFnFtm15dUXiRk/exec';
 
-// ── GOOGLE SHEETS API ────────────────────────────
-async function api(params){
-  const url=API+'?'+Object.entries(params).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(typeof v==='object'?JSON.stringify(v):v)).join('&');
-  const r=await fetch(url);
-  const d=await r.json();
-  if(!d.ok)throw new Error(d.error||'Erreur');
-  return d.data;
+// ═══════════════════════════
+// API — TOUTES LES ACTIONS
+// ═══════════════════════════
+async function api(action, params={}) {
+  // Les lectures restent en GET (simple, rapide)
+  // Les écritures utilisent POST form-urlencoded :
+  //   - pas de preflight CORS (content-type simple)
+  //   - pas de limite de taille d'URL
+  //   - GAS reçoit via e.parameter exactement comme un GET
+  const WRITES = ['saveAppel','saveConfig','savePersonnes','createFeuille','deleteFeuille','resetAppels'];
+  const p = {action, ...params};
+  // Sérialiser les objets
+  const flat = {};
+  for (const [k,v] of Object.entries(p)) {
+    flat[k] = (typeof v === 'object') ? JSON.stringify(v) : String(v);
+  }
+
+  if (WRITES.includes(action)) {
+    // POST form-urlencoded — GAS le lit dans e.parameter, même chose qu'un GET
+    const body = Object.entries(flat)
+      .map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v))
+      .join('&');
+    const r = await fetch(API, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body
+    });
+    const text = await r.text();
+    let d; try { d = JSON.parse(text); } catch(e) { throw new Error('Réponse: '+text.slice(0,200)); }
+    if (!d.ok) throw new Error(d.error || 'Erreur API');
+    return d.data;
+  } else {
+    // GET pour les lectures
+    const qs = Object.entries(flat).map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
+    const r = await fetch(API + '?' + qs);
+    const text = await r.text();
+    let d; try { d = JSON.parse(text); } catch(e) { throw new Error('Réponse: '+text.slice(0,200)); }
+    if (!d.ok) throw new Error(d.error || 'Erreur API');
+    return d.data;
+  }
 }
 
-// ── SAVE ─────────────────────────────────────────
-const Save={
-  config(){ return api({action:'saveConfig',id:S.id,data:S.config}); },
-  persons(){ return api({action:'savePersonnes',id:S.id,data:S.persons}); },
-  rec(date){ return api({action:'saveAppel',id:S.id,date,data:S.records[date]||{}}); }
-};
-
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 // STATE
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 let S = null; // feuille courante
 let authMode = 'login';
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 // UTILS
-// ═══════════════════════════════════════════════════════════════
-function pDate(iso){const[y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d);}
-function fmtDate(d){if(!d)return'';return(typeof d==='string'?pDate(d):d).toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});}
-function fmtShort(d){if(!d)return'';return(typeof d==='string'?pDate(d):d).toLocaleDateString('fr-FR');}
-function fmtTime(t){if(!t)return'';const[h,m]=t.split(':');return`${h}h${m}`;}
-function isoDate(d){const dt=typeof d==='string'?new Date(d):d;return`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;}
-function today(){return isoDate(new Date());}
-function dow(iso){return pDate(iso).getDay();}
+// ═══════════════════════════
+function pd(iso){const[y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d);}
+function fmtDate(d){if(!d)return'';return(typeof d==='string'?pd(d):d).toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});}
+function fmtShort(d){if(!d)return'';return(typeof d==='string'?pd(d):d).toLocaleDateString('fr-FR');}
+function fmtTime(t){if(!t)return'';const s=String(t);const m=s.match(/(\d{1,2}):(\d{2})/);return m?m[1].padStart(2,'0')+'h'+m[2]:'?';}
+function isoD(d){
+  const dt=typeof d==='string'?(d.length===10?new Date(d+'T12:00:00'):new Date(d)):d;
+  return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+}
+function today(){return isoD(new Date());}
+function dow(iso){return pd(iso).getDay();}
 const DAYS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 
 let toastT;
-function toast(msg,type='success'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className='show t-'+type;
-  clearTimeout(toastT);toastT=setTimeout(()=>t.className='',2800);
-}
+function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='show '+type;clearTimeout(toastT);toastT=setTimeout(()=>t.className='',2800);}
 function showMsg(id,txt,type){const e=document.getElementById(id);if(!e)return;e.className='msg '+type;e.textContent=txt;e.style.display='block';}
-function hideMsg(id){const e=document.getElementById(id);if(e)e.style.display='none';}
-function loader(on){document.getElementById('loader').classList.toggle('show',on);}
-function openModal(html){document.getElementById('modalBox').innerHTML=html;document.getElementById('modalOverlay').classList.add('open');}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
-document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target.id==='modalOverlay')closeModal();});
+function showLoader(msg='Chargement...'){document.getElementById('loaderMsg').textContent=msg;document.getElementById('loader').classList.add('show');}
+function hideLoader(){document.getElementById('loader').classList.remove('show');}
+function openModal(html){document.getElementById('modalBox').innerHTML=html;document.getElementById('modalOv').classList.add('open');}
+function closeModal(){document.getElementById('modalOv').classList.remove('open');}
+document.getElementById('modalOv').addEventListener('click',e=>{if(e.target.id==='modalOv')closeModal();});
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 // NAVIGATION
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function goAccueil(){showView('viewAccueil');}
-function disconnect(){S=null;goAccueil();}
+function goHome(){showView('vAccueil');}
+function disconnect(){S=null;goHome();}
 function switchTab(name,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  const map={appel:'tabAppel',historique:'tabHistorique',stats:'tabStats',admin:'tabAdmin'};
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  const map={appel:'tcAppel',historique:'tcHistorique',stats:'tcStats',admin:'tcAdmin'};
   document.getElementById(map[name]).classList.add('active');
   if(el)el.classList.add('active');
   if(name==='appel')renderAppel();
@@ -306,35 +296,31 @@ function switchTab(name,el){
 }
 function toHistorique(){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===1));
-  document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',i===1));
+  document.querySelectorAll('.tc').forEach((t,i)=>t.classList.toggle('active',i===1));
   renderHistorique();
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 // AUTH
-// ═══════════════════════════════════════════════════════════════
-function showAuth(mode){authMode=mode;showView('viewAuth');renderAuth();}
-function togglePwd(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
+// ═══════════════════════════
+function showAuth(mode){authMode=mode;showView('vAuth');renderAuth();}
+function tPwd(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
 
 function renderAuth(){
   const box=document.getElementById('authBox');
   if(authMode==='create'){
-    box.innerHTML=`
-      <div class="auth-title">Créer une feuille</div>
-      <div class="auth-sub">Choisissez un nom et un mot de passe</div>
+    box.innerHTML=`<div class="auth-title">Créer une feuille</div><div class="auth-sub">Choisissez un nom et un mot de passe</div>
       <div id="authMsg" style="display:none"></div>
       <div class="field"><label>Nom</label><input type="text" id="cName" placeholder="ex: Atelier Radio"></div>
-      <div class="field"><label>Mot de passe</label><div class="pwd-wrap"><input type="password" id="cPwd"><button class="pwd-eye" onclick="togglePwd('cPwd',this)">👁</button></div></div>
-      <div class="field"><label>Confirmer</label><div class="pwd-wrap"><input type="password" id="cPwd2"><button class="pwd-eye" onclick="togglePwd('cPwd2',this)">👁</button></div></div>
+      <div class="field"><label>Mot de passe</label><div class="pwd-wrap"><input type="password" id="cPwd"><button class="pwd-eye" onclick="tPwd('cPwd',this)">👁</button></div></div>
+      <div class="field"><label>Confirmer</label><div class="pwd-wrap"><input type="password" id="cPwd2"><button class="pwd-eye" onclick="tPwd('cPwd2',this)">👁</button></div></div>
       <button class="btn" onclick="createSheet()">Créer</button>
       <button class="btn btn-ghost" onclick="showAuth('login')">J'ai déjà une feuille</button>`;
   }else{
-    box.innerHTML=`
-      <div class="auth-title">Se connecter</div>
-      <div class="auth-sub">Accéder à votre feuille</div>
+    box.innerHTML=`<div class="auth-title">Se connecter</div><div class="auth-sub">Accéder à votre feuille</div>
       <div id="authMsg" style="display:none"></div>
       <div class="field"><label>Nom de la feuille</label><input type="text" id="lName" placeholder="Nom de votre feuille"></div>
-      <div class="field"><label>Mot de passe</label><div class="pwd-wrap"><input type="password" id="lPwd"><button class="pwd-eye" onclick="togglePwd('lPwd',this)">👁</button></div></div>
+      <div class="field"><label>Mot de passe</label><div class="pwd-wrap"><input type="password" id="lPwd"><button class="pwd-eye" onclick="tPwd('lPwd',this)">👁</button></div></div>
       <button class="btn" onclick="loginSheet()">Se connecter</button>
       <button class="btn btn-ghost" onclick="showAuth('create')">Créer une nouvelle feuille</button>`;
   }
@@ -348,20 +334,15 @@ async function createSheet(){
   if(!pwd)return showMsg('authMsg','Entrez un mot de passe','error');
   if(pwd!==pwd2)return showMsg('authMsg','Mots de passe différents','error');
   const id='s_'+name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-  loader(true);
+  showLoader('Création de la feuille...');
   try{
-    const existing=await api({action:'getFeuille', id});
-    if(existing){loader(false);return showMsg('authMsg','Ce nom est déjà utilisé','error');}
-    S={id,name,pwd:btoa(unescape(encodeURIComponent(pwd))),
-       config:{days:[],timeStart:'18:00',timeEnd:'20:00',yearStart:today(),yearEnd:'',vacances:[]},
-       persons:[],records:{}};
-    // Sauvegarde locale immédiate
-
-    // Sync Sheets en arrière-plan
-    api({action:'createFeuille', id, name, pwd:btoa(unescape(encodeURIComponent(pwd)))});
-    Save.config(); Save.persons();
-    loader(false);enterApp();
-  }catch(e){loader(false);showMsg('authMsg','Erreur : '+e.message,'error');}
+    await api('createFeuille',{id,name,pwd:btoa(unescape(encodeURIComponent(pwd)))});
+    const cfg={days:[],timeStart:'18:00',timeEnd:'20:00',yearStart:today(),yearEnd:'',vacances:[]};
+    await api('saveConfig',{id,data:cfg});
+    await api('savePersonnes',{id,data:[]});
+    S={id,name,pwd:btoa(unescape(encodeURIComponent(pwd))),config:cfg,persons:[],records:{}};
+    hideLoader();enterApp();
+  }catch(e){hideLoader();showMsg('authMsg','Erreur : '+e.message,'error');}
 }
 
 async function loginSheet(){
@@ -369,41 +350,71 @@ async function loginSheet(){
   const pwd=document.getElementById('lPwd').value;
   if(!name||!pwd)return showMsg('authMsg','Remplissez tous les champs','error');
   const id='s_'+name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-  loader(true);
+  showLoader('Connexion...');
   try{
-    const meta=await api({action:'getFeuille',id});
-    if(!meta){loader(false);return showMsg('authMsg','Feuille introuvable','error');}
-    if(meta.pwd!==btoa(unescape(encodeURIComponent(pwd)))){loader(false);return showMsg('authMsg','Mot de passe incorrect','error');}
-    const [config,persons,records]=await Promise.all([
-      api({action:'getConfig',id}),
-      api({action:'getPersonnes',id}),
-      api({action:'getAppels',id})
+    // Étape 1 : vérifier que la feuille existe et le mdp
+    const meta=await api('getFeuille',{id});
+    if(!meta){hideLoader();return showMsg('authMsg','Feuille introuvable','error');}
+    if(meta.pwd!==btoa(unescape(encodeURIComponent(pwd)))){hideLoader();return showMsg('authMsg','Mot de passe incorrect','error');}
+
+    // Étape 2 : charger config + personnes
+    showLoader('Chargement des données...');
+    const [config, persons] = await Promise.all([
+      api('getConfig',{id}),
+      api('getPersonnes',{id})
     ]);
+
+    // Sanitize config (Sheets peut renvoyer des dates mal formatées)
+    const cfg = config || {days:[],timeStart:'18:00',timeEnd:'20:00',yearStart:today(),yearEnd:'',vacances:[]};
     function fixT(t){if(!t)return'18:00';const s=String(t);const m=s.match(/(\d{1,2}):(\d{2})/);return m?m[1].padStart(2,'0')+':'+m[2]:'18:00';}
-    if(config){config.timeStart=fixT(config.timeStart);config.timeEnd=fixT(config.timeEnd);if(config.yearStart)config.yearStart=String(config.yearStart).slice(0,10);if(config.yearEnd)config.yearEnd=String(config.yearEnd).slice(0,10);}
-    S={id,name:meta.name,pwd:meta.pwd,
-       config:config||{days:[],timeStart:'18:00',timeEnd:'20:00',yearStart:today(),yearEnd:'',vacances:[]},
-       persons:persons||[],
-       records:records||{}};
-    loader(false);enterApp();
-  }catch(e){loader(false);showMsg('authMsg','Erreur : '+e.message,'error');}
+    cfg.timeStart=fixT(cfg.timeStart);
+    cfg.timeEnd=fixT(cfg.timeEnd);
+    // Normaliser les dates de config — Sheets peut renvoyer "Thu Oct 02 2025..." ou "2025-10-02"
+    if(cfg.yearStart)cfg.yearStart=safeIso(cfg.yearStart)||today();
+    if(cfg.yearEnd)cfg.yearEnd=safeIso(cfg.yearEnd)||'';
+
+    // Étape 3 : charger les appels depuis Sheets
+    console.log('[login] personnes chargées:', persons);
+    showLoader('Chargement de l\'historique...');
+    const records = await api('getAppels',{id});
+
+    // Normaliser les personnes (startDate, active depuis Sheets)
+    const safePersons = (persons||[]).map(p=>({
+      ...p,
+      startDate: p.startDate ? String(p.startDate).slice(0,10) : (cfg.yearStart||today()),
+      active: p.active !== false && p.active !== 'false'
+    }));
+    S={id,name:meta.name,pwd:meta.pwd,config:cfg,persons:safePersons,records:records||{}};
+    hideLoader();enterApp();
+  }catch(e){hideLoader();showMsg('authMsg','Erreur : '+e.message,'error');}
 }
 
 function enterApp(){
   document.getElementById('hName').textContent=S.name;
-  const cfg=S.config;
-  const days=(cfg.days||[]).map(d=>DAYS[d]).join(', ')||'—';
-  const h=cfg.timeStart&&cfg.timeEnd?` · ${fmtTime(cfg.timeStart)}–${fmtTime(cfg.timeEnd)}`:'';
+  const c=S.config;
+  const days=(c.days||[]).map(d=>DAYS[d]).join(', ')||'—';
+  const h=c.timeStart&&c.timeEnd?` · ${fmtTime(c.timeStart)}–${fmtTime(c.timeEnd)}`:'';
   document.getElementById('hInfo').textContent=days+h;
-  showView('viewApp');
+  showView('vApp');
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===0));
-  document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('.tc').forEach((t,i)=>t.classList.toggle('active',i===0));
   renderAppel();
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
+// SAVE — ÉCRITURE VERS SHEETS
+// ═══════════════════════════
+// saveAppel : écrit UN record de date dans Sheets
+// Le script supprime les lignes existantes pour cette date et réinsère
+async function saveAppel(date){
+  await api('saveAppel',{id:S.id, date, data:S.records[date]||{}});
+}
+async function saveConfig(){await api('saveConfig',{id:S.id,data:S.config});}
+async function savePersonnes(){await api('savePersonnes',{id:S.id,data:S.persons});}
+
+// ═══════════════════════════
 // HELPERS CALENDRIER
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 function isVac(iso){return(S.config.vacances||[]).some(v=>iso>=v.start&&iso<=v.end);}
 function isCallDay(iso){
   const c=S.config;
@@ -414,69 +425,74 @@ function isCallDay(iso){
   if(isVac(iso))return false;
   return true;
 }
-function personsAt(iso){return S.persons.filter(p=>p.active!==false&&p.startDate<=iso);}
+function personsAt(iso){
+  return S.persons.filter(p=>{
+    // active: accepter booléen true ET string "true"
+    const isActive = p.active !== false && p.active !== 'false';
+    if(!isActive) return false;
+    // startDate: normaliser au format yyyy-MM-dd
+    const sd = p.startDate ? String(p.startDate).slice(0,10) : '';
+    if(!sd) return true; // pas de date de début = toujours inclus
+    return sd <= iso;
+  });
+}
 function getCallDays(){
   const c=S.config;
   if(!c.yearStart||!c.days||!c.days.length)return[];
-  const days=[];const start=pDate(c.yearStart);const end=new Date();
+  const days=[];const start=pd(c.yearStart);const end=new Date();
   for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
-    const iso=isoDate(d);if(isCallDay(iso))days.push(iso);
+    const iso=isoD(d);if(isCallDay(iso))days.push(iso);
   }
   return days;
 }
-function getMissed(){return getCallDays().filter(d=>d<today()&&!(S.records[d]&&(S.records[d].__validated||S.records[d].__cancelled)));}
-
+function isDone(date){const r=S.records[date];return r&&(r.__validated||r.__cancelled);}
+function getMissed(){return getCallDays().filter(d=>d<today()&&!isDone(d));}
 function getAlert(pid){
   const days=getCallDays().filter(d=>personsAt(d).find(p=>p.id===pid));
   let streak=0,abs=0,total=0;
   days.forEach(d=>{const st=(S.records[d]||{})[pid];if(st){total++;if(st==='absent'){abs++;streak++;}else streak=0;}});
-  if(streak>=3)return'streak';
-  if(total>=5&&abs/total>=0.5)return'freq';
-  return null;
+  if(streak>=3)return'streak';if(total>=5&&abs/total>=0.5)return'freq';return null;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 // TAB APPEL
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 function renderAppel(){
   const el=document.getElementById('appelContent');
   const cfg=S.config;const t=today();const missed=getMissed();
   let html='';
   if(missed.length)html+=`<div class="missed-alert">⚠️ ${missed.length} appel(s) manqué(s) — <a href="#" onclick="toHistorique();return false;" style="color:inherit;text-decoration:underline">voir l'historique</a></div>`;
-  if(!cfg.days||!cfg.days.length){
-    html+=`<div class="card"><div class="empty"><div class="empty-icon">⚙️</div>Configurez les jours d'appel dans Admin</div></div>`;
-    el.innerHTML=html;return;
-  }
-  const isCall=isCallDay(t);
-  const isDone=!!(S.records[t]&&S.records[t].__validated);
-  if(isCall&&!isDone)html+=buildApelDay(t,true);
-  else if(isCall&&isDone)html+=`<div class="card"><div class="today-ok">✅ L'appel du ${fmtShort(t)} a été effectué.</div></div>`;
-  else html+=`<div class="card"><div class="empty"><div class="empty-icon">📅</div>Pas d'appel aujourd'hui<br><small style="color:var(--muted)">${(cfg.days||[]).map(d=>DAYS[d]).join(', ')}</small></div></div>`;
-  if(missed.length){
-    html+=`<div class="card"><div class="card-title">📂 Appels manqués</div>`;
-    missed.forEach(d=>{html+=buildApelDay(d,false);});
-    html+=`</div>`;
-  }
+  if(!cfg.days||!cfg.days.length){html+=`<div class="card"><div class="empty"><div class="eicon">⚙️</div>Configurez les jours d'appel dans Admin</div></div>`;el.innerHTML=html;return;}
+  const isCall=isCallDay(t);const done=isDone(t);
+  if(isCall&&!done)html+=buildDay(t,true);
+  else if(isCall&&done){
+    const r=S.records[t];
+    if(r&&r.__cancelled)html+=`<div class="card"><div class="today-ok">🚫 Séance du ${fmtShort(t)} annulée.</div></div>`;
+    else html+=`<div class="card"><div class="today-ok">✅ L'appel du ${fmtShort(t)} a été effectué.</div></div>`;
+  }else html+=`<div class="card"><div class="empty"><div class="eicon">📅</div>Pas d'appel aujourd'hui<br><small style="color:var(--muted)">${(cfg.days||[]).map(d=>DAYS[d]).join(', ')}</small></div></div>`;
+  if(missed.length){html+=`<div class="card"><div class="card-title" style="margin-bottom:14px">📂 Appels manqués</div>`;missed.forEach(d=>{html+=buildDay(d,false);});html+=`</div>`;}
   el.innerHTML=html;
 }
 
-function buildApelDay(date,isToday){
+function buildDay(date,isToday){
   const persons=personsAt(date);const rec=S.records[date]||{};
-  const isCancelled=rec.__cancelled;
-  let h=`<div class="card" id="ad_${date}"><div class="card-header"><div><div class="card-title">${isToday?'📞 Appel du jour':'📂 Appel manqué'}</div><div class="card-sub">${fmtDate(date)}</div></div><button class="btn btn-sm ${isCancelled?'btn-danger':'btn-ghost'}" style="margin-top:0;white-space:nowrap" onclick="toggleCancel('${date}')">${isCancelled?'↩ Rétablir':'🚫 Séance annulée'}</button></div>`;
-  if(isCancelled){h+=`<div style="padding:12px 0;color:var(--orange);font-size:13px;display:flex;align-items:center;gap:8px">🚫 Séance annulée — aucun statut enregistré</div></div>`;return h;}
+  console.log('[buildDay]',date,'persons:',persons.length,'S.persons:',S.persons.length);
+  const cancelled=rec.__cancelled;
+  let h=`<div class="card" id="ad_${date}"><div class="card-hdr"><div><div class="card-title">${isToday?'📞 Appel du jour':'📂 Appel manqué'}</div><div class="card-sub">${fmtDate(date)}</div></div>
+    <button class="btn btn-sm ${cancelled?'btn-danger':'btn-ghost'}" onclick="toggleCancel('${date}')">${cancelled?'↩ Rétablir':'🚫 Annuler'}</button>
+  </div>`;
+  if(cancelled){h+=`<div style="padding:10px 0;color:var(--orange);font-size:13px">🚫 Séance annulée — aucun statut enregistré</div></div>`;return h;}
   if(!persons.length){h+=`<div class="empty" style="padding:16px 0">Aucune personne</div>`;}
   else{
-    h+=`<div class="person-list">`;
+    h+=`<div class="plist">`;
     persons.forEach(p=>{
-      const st=rec[p.id]||'';
-      const al=getAlert(p.id)?'⚠️':'';
-      h+=`<div class="person-row ${st}" id="pr_${date}_${p.id}">
-        <div class="person-name">${p.name}<span class="person-alert">${al}</span></div>
-        <div class="status-btns">
-          <button class="status-btn ${st==='present'?'ap':''}" onclick="setStatus('${date}','${p.id}','present')">✓ Présent</button>
-          <button class="status-btn ${st==='absent'?'aa':''}" onclick="setStatus('${date}','${p.id}','absent')">✗ Absent</button>
-          <button class="status-btn ${st==='justified'?'aj':''}" onclick="setStatus('${date}','${p.id}','justified')">📋 Justifiée</button>
+      const st=rec[p.id]||'';const al=getAlert(p.id)?'⚠️':'';
+      h+=`<div class="prow ${st}" id="pr_${date}_${p.id}">
+        <div class="pname">${p.name} <span class="palert">${al}</span></div>
+        <div class="sbtns">
+          <button class="sbtn ${st==='present'?'ap':''}" onclick="setSt('${date}','${p.id}','present')">✓ Présent</button>
+          <button class="sbtn ${st==='absent'?'aa':''}" onclick="setSt('${date}','${p.id}','absent')">✗ Absent</button>
+          <button class="sbtn ${st==='justified'?'aj':''}" onclick="setSt('${date}','${p.id}','justified')">📋 Justifiée</button>
         </div></div>`;
     });
     h+=`</div><div style="margin-top:14px"><button class="btn btn-sm" onclick="valider('${date}')">Valider l'appel</button></div>`;
@@ -484,84 +500,84 @@ function buildApelDay(date,isToday){
   h+=`</div>`;return h;
 }
 
-function setStatus(date,pid,status){
+// Clic sur un statut → uniquement en mémoire, PAS de sauvegarde
+function setSt(date,pid,status){
   if(!S.records[date])S.records[date]={};
   S.records[date][pid]=status;
-  // UI immédiate
   const row=document.getElementById(`pr_${date}_${pid}`);
   if(row){
-    row.className='person-row '+status;
-    row.querySelectorAll('.status-btn').forEach(b=>{
-      b.className='status-btn';
+    row.className='prow '+status;
+    row.querySelectorAll('.sbtn').forEach(b=>{
+      b.className='sbtn';
       if(b.textContent.includes('Présent')&&status==='present')b.classList.add('ap');
       if(b.textContent.includes('Absent')&&status==='absent')b.classList.add('aa');
       if(b.textContent.includes('Justifiée')&&status==='justified')b.classList.add('aj');
     });
   }
-  // Save uniquement ce record
-  Save.rec(date).catch(e=>console.error(e));
 }
 
-function toggleCancel(date){
-  if(!S.records[date])S.records[date]={};
-  if(S.records[date].__cancelled){
-    delete S.records[date].__cancelled;
-    delete S.records[date].__validated;
-  }else{
-    // Effacer tous les statuts et marquer annulé+validé
-    S.records[date]={__cancelled:true,__validated:true};
-  }
-  api({action:'saveAppel',id:S.id,date,data:S.records[date]||{}}).catch(e=>console.error(e));
-  renderAppel();
-  toast(S.records[date]&&S.records[date].__cancelled?'Séance annulée ✓':'Séance rétablie ✓');
-}
-
-function valider(date){
+// Valider → sauvegarde vers Sheets
+async function valider(date){
   const persons=personsAt(date);const rec=S.records[date]||{};
   const unset=persons.filter(p=>!rec[p.id]);
   if(unset.length&&!confirm(`${unset.length} personne(s) sans statut. Continuer ?`))return;
   if(!S.records[date])S.records[date]={};
   S.records[date].__validated=true;
-  // Sync Sheets uniquement ici
-  api({action:'saveAppel',id:S.id,date,data:S.records[date]}).catch(e=>console.error(e));
-  toast('Appel validé ✓');renderAppel();
+  showLoader('Enregistrement de l\'appel...');
+  try{
+    await saveAppel(date);
+    hideLoader();toast('Appel enregistré ✓');renderAppel();
+  }catch(e){hideLoader();toast('Erreur : '+e.message,'err');}
 }
 
-// ═══════════════════════════════════════════════════════════════
+// Annuler séance → sauvegarde vers Sheets
+async function toggleCancel(date){
+  if(!S.records[date])S.records[date]={};
+  if(S.records[date].__cancelled){
+    delete S.records[date].__cancelled;
+    delete S.records[date].__validated;
+  }else{
+    S.records[date]={__cancelled:true,__validated:true};
+  }
+  showLoader('Enregistrement...');
+  try{
+    await saveAppel(date);
+    hideLoader();toast(S.records[date].__cancelled?'Séance annulée ✓':'Séance rétablie ✓');
+    renderAppel();
+  }catch(e){hideLoader();toast('Erreur : '+e.message,'err');}
+}
+
+// ═══════════════════════════
 // TAB HISTORIQUE
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 function renderHistorique(){
   const el=document.getElementById('historiqueContent');
   const days=getCallDays();
-  if(!days.length){el.innerHTML=`<div class="empty"><div class="empty-icon">📚</div>Aucun historique</div>`;return;}
+  if(!days.length){el.innerHTML=`<div class="empty"><div class="eicon">📚</div>Aucun historique</div>`;return;}
   const t=today();let html='';
   [...days].reverse().forEach(date=>{
-    const rec=S.records[date]||{};
-    const persons=personsAt(date);
-    const done=!!(rec.__validated);
-    const cancelled=!!(rec.__cancelled);
+    const rec=S.records[date]||{};const persons=personsAt(date);
+    const done=!!(rec.__validated);const cancelled=!!(rec.__cancelled);
     const isPast=date<t;const isToday=date===t;
     let p=0,a=0,j=0;
     persons.forEach(pe=>{const st=rec[pe.id];if(st==='present')p++;else if(st==='absent')a++;else if(st==='justified')j++;});
-    html+=`<div class="history-item"><div class="history-header" onclick="this.nextElementSibling.classList.toggle('open')">
-      <div class="history-date">${fmtDate(date)}</div>
+    html+=`<div class="hitem"><div class="hhdr" onclick="this.nextElementSibling.classList.toggle('open')">
+      <div class="hdate">${fmtDate(date)}</div>
       <div class="hbadges">
         ${cancelled?`<span class="badge bo">🚫 Annulée</span>`:
           done?`<span class="badge bg">✓ ${p}</span><span class="badge br">✗ ${a}</span>${j?`<span class="badge bb">📋 ${j}</span>`:''}`:
           isPast?`<span class="badge bo">Manqué</span>`:`<span class="badge bm">À faire</span>`}
         ${isPast&&!done&&!cancelled?`<button class="btn btn-sm btn-outline" onclick="event.stopPropagation();goToMissed('${date}')">Faire l'appel</button>`:''}
         ${isToday&&!done&&!cancelled?`<button class="btn btn-sm" onclick="event.stopPropagation();switchTab('appel',document.querySelectorAll('.tab')[0])">Faire l'appel</button>`:''}
-        ${(done||isPast)?`<button class="btn btn-sm ${cancelled?'btn-outline':'btn-ghost'}" style="margin-top:0" onclick="event.stopPropagation();toggleCancel('${date}');renderHistorique()">${cancelled?'↩ Rétablir':'🚫 Annuler'}</button>`:''}
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();toggleCancelH('${date}')">${cancelled?'↩ Rétablir':'🚫 Annuler'}</button>
       </div></div>
-      <div class="history-body">`;
-    if(cancelled){html+=`<div style="padding:10px 0;color:var(--orange);font-size:13px">🚫 Séance annulée — aucun statut enregistré</div>`;}
+      <div class="hbody">`;
+    if(cancelled){html+=`<div style="padding:10px 0;color:var(--orange);font-size:13px">🚫 Séance annulée</div>`;}
     else if(done){
-      persons.forEach(p=>{
-        const st=rec[p.id]||'';
-        const stH=st==='present'?`<span style="color:var(--green)">✓ Présent</span>`:
-          st==='absent'?`<span style="color:var(--red)">✗ Absent</span>`:
-          st==='justified'?`<span style="color:var(--accent2)">📋 Justifiée</span>`:`<span style="color:var(--muted)">—</span>`;
-        html+=`<div class="hprow"><span>${p.name}</span><div style="display:flex;align-items:center;gap:8px">${stH}<button class="btn btn-sm btn-ghost" style="padding:4px 10px;font-size:11px" onclick="editRec('${date}','${p.id}')">Modifier</button></div></div>`;
+      persons.forEach(pe=>{
+        const st=rec[pe.id]||'';
+        const stH=st==='present'?`<span style="color:var(--green)">✓ Présent</span>`:st==='absent'?`<span style="color:var(--red)">✗ Absent</span>`:st==='justified'?`<span style="color:var(--accent2)">📋 Justifiée</span>`:`<span style="color:var(--muted)">—</span>`;
+        html+=`<div class="hprow"><span>${pe.name}</span><div style="display:flex;align-items:center;gap:8px">${stH}<button class="btn btn-sm btn-ghost" style="padding:4px 10px;font-size:11px" onclick="editRec('${date}','${pe.id}')">Modifier</button></div></div>`;
       });
     }else{html+=`<div style="padding:10px 0;color:var(--muted);font-size:13px">${isPast?'Appel manqué':'Pas encore effectué'}</div>`;}
     html+=`</div></div>`;
@@ -569,66 +585,71 @@ function renderHistorique(){
   el.innerHTML=html;
 }
 
-function goToMissed(date){
-  switchTab('appel',document.querySelectorAll('.tab')[0]);
-  setTimeout(()=>{const e=document.getElementById(`ad_${date}`);if(e)e.scrollIntoView({behavior:'smooth'});},100);
-}
+function goToMissed(date){switchTab('appel',document.querySelectorAll('.tab')[0]);setTimeout(()=>{const e=document.getElementById(`ad_${date}`);if(e)e.scrollIntoView({behavior:'smooth'});},100);}
 
 function editRec(date,pid){
-  const rec=S.records[date]||{};
-  const p=S.persons.find(p=>p.id===pid);
-  const cur=rec[pid]||'';
+  const rec=S.records[date]||{};const p=S.persons.find(p=>p.id===pid);const cur=rec[pid]||'';
   openModal(`<div class="modal-title">Modifier — ${p?.name}</div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:18px">${fmtDate(date)}</div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <button class="btn ${cur==='present'?'':'btn-outline'}" onclick="applyRec('${date}','${pid}','present')">✓ Présent</button>
-      <button class="btn ${cur==='absent'?'btn-danger':'btn-ghost'}" onclick="applyRec('${date}','${pid}','absent')">✗ Absent</button>
+      <button class="btn btn-danger" style="${cur==='absent'?'':'background:transparent;border:1px solid var(--red);color:var(--red)'}" onclick="applyRec('${date}','${pid}','absent')">✗ Absent</button>
       <button class="btn btn-outline" style="border-color:var(--accent2);color:var(--accent2)" onclick="applyRec('${date}','${pid}','justified')">📋 Justifiée</button>
       <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
     </div>`);
 }
 
-function applyRec(date,pid,status){
+async function applyRec(date,pid,status){
   if(!S.records[date])S.records[date]={};
   S.records[date][pid]=status;
-  api({action:'saveAppel',id:S.id,date,data:S.records[date]}).catch(e=>console.error(e));
-  closeModal();toast('Modification enregistrée ✓');renderHistorique();
+  showLoader('Modification...');
+  try{
+    await saveAppel(date);
+    hideLoader();closeModal();toast('Modification enregistrée ✓');renderHistorique();
+  }catch(e){hideLoader();toast('Erreur : '+e.message,'err');}
 }
 
-// ═══════════════════════════════════════════════════════════════
+async function toggleCancelH(date){
+  if(!S.records[date])S.records[date]={};
+  if(S.records[date].__cancelled){delete S.records[date].__cancelled;delete S.records[date].__validated;}
+  else{S.records[date]={__cancelled:true,__validated:true};}
+  showLoader('Enregistrement...');
+  try{
+    await saveAppel(date);
+    hideLoader();toast(S.records[date].__cancelled?'Séance annulée ✓':'Séance rétablie ✓');renderHistorique();
+  }catch(e){hideLoader();toast('Erreur : '+e.message,'err');}
+}
+
+// ═══════════════════════════
 // TAB STATS
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 function renderStats(){
   const el=document.getElementById('statsContent');
-  const days=getCallDays().filter(d=>S.records[d]);
+  const days=getCallDays().filter(d=>S.records[d]&&S.records[d].__validated);
   const persons=S.persons.filter(p=>p.active!==false);
-  if(!days.length){el.innerHTML=`<div class="empty"><div class="empty-icon">📊</div>Pas encore de données</div>`;return;}
+  if(!days.length){el.innerHTML=`<div class="empty"><div class="eicon">📊</div>Pas encore de données</div>`;return;}
   let tP=0,tA=0,tJ=0;const ps={};
   persons.forEach(p=>{ps[p.id]={p:0,a:0,j:0,t:0};});
   days.forEach(d=>{
-    const rec=S.records[d];
+    if(S.records[d].__cancelled)return;
     personsAt(d).forEach(p=>{
-      const st=rec[p.id];if(!ps[p.id])return;
+      const st=(S.records[d]||{})[p.id];if(!ps[p.id])return;
       if(st){ps[p.id].t++;if(st==='present'){ps[p.id].p++;tP++;}else if(st==='absent'){ps[p.id].a++;tA++;}else if(st==='justified'){ps[p.id].j++;tJ++;}}
     });
   });
-  let html=`<div class="stats-grid">
-    <div class="stat-card"><div class="stat-value" style="color:var(--green)">${tP}</div><div class="stat-label">Présences</div></div>
-    <div class="stat-card"><div class="stat-value" style="color:var(--red)">${tA}</div><div class="stat-label">Absences</div></div>
-    <div class="stat-card"><div class="stat-value" style="color:var(--accent2)">${tJ}</div><div class="stat-label">Justifiées</div></div>
-    <div class="stat-card"><div class="stat-value">${days.length}</div><div class="stat-label">Appels faits</div></div>
-  </div><div class="card"><div class="card-title">Détail par personne</div>`;
+  let html=`<div class="sgrid">
+    <div class="scard"><div class="sval" style="color:var(--green)">${tP}</div><div class="slbl">Présences</div></div>
+    <div class="scard"><div class="sval" style="color:var(--red)">${tA}</div><div class="slbl">Absences</div></div>
+    <div class="scard"><div class="sval" style="color:var(--accent2)">${tJ}</div><div class="slbl">Justifiées</div></div>
+    <div class="scard"><div class="sval">${days.length}</div><div class="slbl">Appels faits</div></div>
+  </div><div class="card"><div class="card-title" style="margin-bottom:14px">Détail par personne</div>`;
   persons.forEach(p=>{
     const s=ps[p.id];if(!s)return;
-    const al=getAlert(p.id);
-    const pct=s.t>0?Math.round(s.p/s.t*100):0;
-    html+=`<div class="pstat-row">
-      <div class="pstat-name">${p.name}</div>
+    const al=getAlert(p.id);const pct=s.t>0?Math.round(s.p/s.t*100):0;
+    html+=`<div class="psrow"><div class="psname">${p.name}</div>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-        <span class="badge bg">✓ ${s.p}</span>
-        <span class="badge br">✗ ${s.a}</span>
-        <span class="badge bb">📋 ${s.j}</span>
-        <div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div>
+        <span class="badge bg">✓ ${s.p}</span><span class="badge br">✗ ${s.a}</span><span class="badge bb">📋 ${s.j}</span>
+        <div class="bw"><div class="bbar" style="width:${pct}%"></div></div>
         <span style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">${pct}%</span>
         ${al==='streak'?`<span class="badge br">3 absences consécutives</span>`:''}
         ${al==='freq'?`<span class="badge bo">Souvent absent</span>`:''}
@@ -639,285 +660,200 @@ function renderStats(){
 }
 
 function exportXL(){
-  const wb = XLSX.utils.book_new();
-
-  // ── Onglet 1 : Présences ──────────────────────
-  const days = getCallDays();
-  const persons = S.persons.filter(p=>p.active!==false);
-  const h1 = ['Nom', ...days.map(d=>fmtShort(d))];
-  const presRows = persons.map(p=>{
-    const r=[p.name];
-    days.forEach(d=>{const st=(S.records[d]||{})[p.id];r.push(st==='present'?'P':st==='absent'?'A':st==='justified'?'J':'');});
-    return r;
-  });
-  const ws1 = XLSX.utils.aoa_to_sheet([h1,...presRows]);
-  XLSX.utils.book_append_sheet(wb, ws1, 'Présences');
-
-  // ── Onglet 2 : Statistiques ───────────────────
-  const statRows = [['Nom','Présences','Absences','Justifiées','Total','Taux présence %']];
-  persons.forEach(p=>{
-    let pr=0,ab=0,ju=0;
-    days.forEach(d=>{
-      const st=(S.records[d]||{})[p.id];
-      if(st==='present')pr++;else if(st==='absent')ab++;else if(st==='justified')ju++;
-    });
-    const tot=pr+ab+ju;
-    statRows.push([p.name,pr,ab,ju,tot,tot>0?Math.round(pr/tot*100)+'%':'—']);
-  });
-  const ws2 = XLSX.utils.aoa_to_sheet(statRows);
-  XLSX.utils.book_append_sheet(wb, ws2, 'Statistiques');
-
-  // ── Onglet 3 : Historique détaillé ───────────
-  const histRows = [['Date','Personne','Statut','Validé']];
-  [...days].reverse().forEach(d=>{
-    const rec=S.records[d]||{};
-    const validated=rec.__validated?'Oui':'Non';
-    personsAt(d).forEach(p=>{
-      const st=rec[p.id]||'';
-      const stFr=st==='present'?'Présent':st==='absent'?'Absent':st==='justified'?'Justifiée':'—';
-      histRows.push([fmtShort(d), p.name, stFr, validated]);
-    });
-  });
-  const ws3 = XLSX.utils.aoa_to_sheet(histRows);
-  XLSX.utils.book_append_sheet(wb, ws3, 'Historique');
-
-  // ── Onglet 4 : Personnes ──────────────────────
-  const perRows = [['Nom','Date début','Actif']];
-  S.persons.forEach(p=>{
-    perRows.push([p.name, fmtShort(p.startDate), p.active!==false?'Oui':'Non']);
-  });
-  const ws4 = XLSX.utils.aoa_to_sheet(perRows);
-  XLSX.utils.book_append_sheet(wb, ws4, 'Personnes');
-
-  // ── Onglet 5 : Configuration ──────────────────
-  const cfg = S.config;
-  const cfgRows = [
-    ['Paramètre','Valeur'],
-    ['Nom de la feuille', S.name],
-    ['Jours appel', (cfg.days||[]).map(d=>DAYS[d]).join(', ')],
-    ['Heure début', fmtTime(cfg.timeStart)],
-    ['Heure fin', fmtTime(cfg.timeEnd)],
-    ['Date début atelier', fmtShort(cfg.yearStart)],
-    ['Date fin atelier', fmtShort(cfg.yearEnd)],
-    ['Export généré le', fmtShort(today())]
-  ];
-  (cfg.vacances||[]).forEach((v,i)=>{
-    cfgRows.push([`Vacances ${i+1}`, `${fmtShort(v.start)} → ${fmtShort(v.end)}`]);
-  });
-  const ws5 = XLSX.utils.aoa_to_sheet(cfgRows);
-  XLSX.utils.book_append_sheet(wb, ws5, 'Configuration');
-
-  XLSX.writeFile(wb, `presences_${S.name}_${today()}.xlsx`);
-  toast('Export complet téléchargé ✓');
+  const wb=XLSX.utils.book_new();
+  const days=getCallDays();const persons=S.persons.filter(p=>p.active!==false);
+  // Présences
+  const h1=['Nom',...days.map(d=>fmtShort(d))];
+  const rows=persons.map(p=>{const r=[p.name];days.forEach(d=>{const st=(S.records[d]||{})[p.id];r.push(st==='present'?'P':st==='absent'?'A':st==='justified'?'J':'');});return r;});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([h1,...rows]),'Présences');
+  // Stats
+  const sr=[['Nom','Présences','Absences','Justifiées','Total','Taux %']];
+  persons.forEach(p=>{let pr=0,ab=0,ju=0;days.forEach(d=>{const st=(S.records[d]||{})[p.id];if(st==='present')pr++;else if(st==='absent')ab++;else if(st==='justified')ju++;});const tot=pr+ab+ju;sr.push([p.name,pr,ab,ju,tot,tot>0?Math.round(pr/tot*100)+'%':'—']);});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sr),'Statistiques');
+  // Historique
+  const hr=[['Date','Personne','Statut','Validé']];
+  [...days].reverse().forEach(d=>{const rec=S.records[d]||{};const val=rec.__validated?'Oui':'Non';personsAt(d).forEach(p=>{const st=rec[p.id]||'';hr.push([fmtShort(d),p.name,st==='present'?'Présent':st==='absent'?'Absent':st==='justified'?'Justifiée':'—',val]);});});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(hr),'Historique');
+  // Personnes
+  const pr=[['Nom','Date début','Actif']];S.persons.forEach(p=>{pr.push([p.name,fmtShort(p.startDate),p.active!==false?'Oui':'Non']);});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(pr),'Personnes');
+  XLSX.writeFile(wb,`presences_${S.name}_${today()}.xlsx`);toast('Export téléchargé ✓');
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 // TAB ADMIN
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════
 function renderAdmin(){
-  const el=document.getElementById('adminContent');
-  const cfg=S.config;const persons=S.persons;const selDays=cfg.days||[];
-  let html=`
-  <div class="card">
-    <div class="card-title">👥 Personnes</div>
-    <div id="nameList">`;
+  const el=document.getElementById('adminContent');const cfg=S.config;const persons=S.persons;const sd=cfg.days||[];
+  let html=`<div class="card"><div class="card-title" style="margin-bottom:14px">👥 Personnes</div>
+    <div id="nlist">`;
   persons.forEach(p=>{
     const active=p.active!==false;
-    html+=`<div class="name-item" id="ni_${p.id}" data-id="${p.id}" draggable="true">
+    html+=`<div class="nitem" id="ni_${p.id}" data-id="${p.id}" draggable="true">
       <span class="drag-handle">⠿</span>
-      <input type="text" value="${p.name}" id="ni_input_${p.id}" readonly>
+      <input type="text" value="${p.name}" id="ni_inp_${p.id}" readonly>
       <button class="btn btn-sm btn-ghost" onclick="editName('${p.id}')">✏️</button>
       <button class="btn btn-sm ${active?'btn-danger':'btn-outline'}" onclick="togglePerson('${p.id}')">${active?'Retirer':'Réactiver'}</button>
     </div>`;
   });
   html+=`</div>
     <div style="margin-top:14px">
-      <div class="section-title mb8">Ajouter une personne</div>
-      <div class="input-row mb8">
+      <div class="stitle mb8">Ajouter une personne</div>
+      <div class="irow mb8">
         <input type="text" id="newName" placeholder="Prénom Nom">
-        <input type="date" id="newStart" value="${today()}" class="date-input" style="width:auto">
+        <input type="date" id="newStart" value="${today()}" class="dinput" style="width:auto">
         <button class="btn btn-sm" onclick="addPerson()">Ajouter</button>
       </div>
-      <div class="upload-zone" onclick="document.getElementById('fileInput').click()" ondragover="this.classList.add('drag');event.preventDefault()" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+      <div class="uzone" onclick="document.getElementById('fInput').click()" ondragover="this.classList.add('drag');event.preventDefault()" ondragleave="this.classList.remove('drag')" ondrop="hDrop(event)">
         <div style="font-size:24px;margin-bottom:8px">📂</div>
         <div style="font-size:14px;font-weight:500;margin-bottom:4px">Importer Excel ou CSV</div>
         <div style="font-size:12px;color:var(--muted)">Une colonne avec les noms</div>
       </div>
-      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none" onchange="importFile(event)">
+      <input type="file" id="fInput" accept=".xlsx,.xls,.csv" style="display:none" onchange="importFile(event)">
       <div id="importMsg" style="display:none;margin-top:8px"></div>
-    </div>
-  </div>
+    </div></div>
 
-  <div class="card">
-    <div class="card-title">📅 Jours d'appel</div>
-    <div class="days-grid">${DAYS.map((d,i)=>`<button class="day-btn ${selDays.includes(i)?'sel':''}" onclick="toggleDay(${i})">${d}</button>`).join('')}</div>
-    <div class="section-title">Horaires</div>
-    <div class="time-row mb8">
-      <input type="time" class="time-input" id="tStart" value="${cfg.timeStart||'18:00'}">
+  <div class="card"><div class="card-title" style="margin-bottom:14px">📅 Jours d'appel</div>
+    <div class="dgrid">${DAYS.map((d,i)=>`<button class="dbtn ${sd.includes(i)?'sel':''}" onclick="toggleDay(${i})">${d}</button>`).join('')}</div>
+    <div class="stitle">Horaires</div>
+    <div class="trow mb8">
+      <input type="time" class="tinput" id="tStart" value="${cfg.timeStart||'18:00'}">
       <span style="color:var(--muted)">à</span>
-      <input type="time" class="time-input" id="tEnd" value="${cfg.timeEnd||'20:00'}">
+      <input type="time" class="tinput" id="tEnd" value="${cfg.timeEnd||'20:00'}">
     </div>
     <button class="btn btn-sm btn-outline" onclick="saveHours()">Sauvegarder les horaires</button>
-    <div id="hoursMsg" style="display:none;margin-top:8px"></div>
-  </div>
+    <div id="hoursMsg" style="display:none;margin-top:8px"></div></div>
 
-  <div class="card">
-    <div class="card-title">🗓 Période de l'atelier</div>
-    <div class="flex-gap mb12">
-      <div class="field" style="flex:1;min-width:140px;margin-bottom:0"><label>Début</label><input type="date" id="yStart" value="${cfg.yearStart||today()}"></div>
-      <div class="field" style="flex:1;min-width:140px;margin-bottom:0"><label>Fin</label><input type="date" id="yEnd" value="${cfg.yearEnd||''}"></div>
+  <div class="card"><div class="card-title" style="margin-bottom:14px">🗓 Période de l'atelier</div>
+    <div class="fgap mb12">
+      <div class="field" style="flex:1;min-width:140px;margin-bottom:0"><label>Début</label><input type="date" id="yStart" value="${safeIso(cfg.yearStart)||today()}"></div>
+      <div class="field" style="flex:1;min-width:140px;margin-bottom:0"><label>Fin</label><input type="date" id="yEnd" value="${safeIso(cfg.yearEnd)||''}"></div>
     </div>
     <button class="btn btn-sm btn-outline" onclick="savePeriod()">Sauvegarder la période</button>
-    <div id="periodMsg" style="display:none;margin-top:8px"></div>
-  </div>
+    <div id="periodMsg" style="display:none;margin-top:8px"></div></div>
 
-  <div class="card">
-    <div class="card-title">🏖 Vacances scolaires</div>
+  <div class="card"><div class="card-title" style="margin-bottom:14px">🏖 Vacances scolaires</div>
     <div id="vacList">
       ${(cfg.vacances||[]).map((v,i)=>`<div class="zone-item"><span>${fmtShort(v.start)} → ${fmtShort(v.end)}</span><button class="btn btn-sm btn-ghost" onclick="removeVac(${i})">✕</button></div>`).join('')}
     </div>
-    <div class="time-row" style="margin-top:10px">
-      <input type="date" id="vStart" class="date-input" style="flex:1">
+    <div class="trow" style="margin-top:10px">
+      <input type="date" id="vStart" class="dinput" style="flex:1">
       <span style="color:var(--muted)">→</span>
-      <input type="date" id="vEnd" class="date-input" style="flex:1">
+      <input type="date" id="vEnd" class="dinput" style="flex:1">
       <button class="btn btn-sm" onclick="addVac()">Ajouter</button>
-    </div>
-  </div>
+    </div></div>
 
-  <div class="card">
-    <div class="card-title">📤 Import complet (listing)</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Importe le fichier généré (onglets : Configuration, Personnes, Vacances, Appels)</div>
-    <div class="upload-zone" onclick="document.getElementById('histInput').click()" ondragover="this.classList.add('drag');event.preventDefault()" ondragleave="this.classList.remove('drag')" ondrop="handleHistDrop(event)">
+  <div class="card"><div class="card-title" style="margin-bottom:14px">📤 Import complet (listing)</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Importe Configuration + Personnes + Vacances + Appels depuis un fichier Excel</div>
+    <div class="uzone" onclick="document.getElementById('hInput').click()" ondragover="this.classList.add('drag');event.preventDefault()" ondragleave="this.classList.remove('drag')" ondrop="hHistDrop(event)">
       <div style="font-size:24px;margin-bottom:8px">📊</div>
       <div style="font-size:14px;font-weight:500;margin-bottom:4px">Importer le listing complet</div>
-      <div style="font-size:12px;color:var(--muted)">Configuration + Personnes + Vacances + Appels</div>
+      <div style="font-size:12px;color:var(--muted)">Onglets : Configuration, Personnes, Vacances, Appels</div>
     </div>
-    <input type="file" id="histInput" accept=".xlsx,.xls" style="display:none" onchange="importHistory(event)">
-    <div id="histMsg" style="display:none;margin-top:8px"></div>
-  </div>
+    <input type="file" id="hInput" accept=".xlsx,.xls" style="display:none" onchange="importHistory(event)">
+    <div id="histMsg" style="display:none;margin-top:8px"></div></div>
 
-  <div class="card" style="border-color:rgba(255,71,87,.3)">
-    <div class="card-title" style="color:var(--red)">⚠️ Zone dangereuse</div>
+  <div class="card" style="border-color:rgba(255,71,87,.3)"><div class="card-title" style="color:var(--red);margin-bottom:14px">⚠️ Zone dangereuse</div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div>
         <button class="btn btn-danger btn-sm" onclick="resetData()">Réinitialiser les données</button>
-        <div style="font-size:11px;color:var(--muted);margin-top:6px">Remet à zéro personnes et appels. La feuille reste.</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">Remet à zéro personnes et appels.</div>
       </div>
       <div>
         <button class="btn btn-danger btn-sm" onclick="deleteAll()">Supprimer la feuille</button>
-        <div style="font-size:11px;color:var(--muted);margin-top:6px">Supprime tout définitivement. Irréversible.</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">Supprime tout définitivement.</div>
       </div>
-    </div>
-  </div>`;
+    </div></div>`;
   el.innerHTML=html;
   initDnD();
 }
 
-function toggleDay(i){
+async function toggleDay(i){
   const c=S.config;if(!c.days)c.days=[];
   const idx=c.days.indexOf(i);if(idx===-1)c.days.push(i);else c.days.splice(idx,1);
-  toast('Jour mis à jour ✓');renderAdmin();
-  Save.config().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await saveConfig();hideLoader();toast('Jour mis à jour ✓');renderAdmin();}catch(e){hideLoader();toast('Erreur','err');}
 }
-function saveHours(){
+async function saveHours(){
   S.config.timeStart=document.getElementById('tStart').value;
   S.config.timeEnd=document.getElementById('tEnd').value;
-  showMsg('hoursMsg','Horaires sauvegardés ✓','success');
-  toast('Horaires sauvegardés ✓');
-  setTimeout(()=>hideMsg('hoursMsg'),3000);
-  Save.config().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await saveConfig();hideLoader();showMsg('hoursMsg','Horaires sauvegardés ✓','success');toast('Horaires sauvegardés ✓');setTimeout(()=>{const e=document.getElementById('hoursMsg');if(e)e.style.display='none';},3000);}catch(e){hideLoader();toast('Erreur','err');}
 }
-function savePeriod(){
+async function savePeriod(){
   S.config.yearStart=document.getElementById('yStart').value;
   S.config.yearEnd=document.getElementById('yEnd').value;
-  showMsg('periodMsg','Période sauvegardée ✓','success');
-  toast('Période sauvegardée ✓');
-  setTimeout(()=>hideMsg('periodMsg'),3000);
-  renderAdmin();
-  Save.config().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await saveConfig();hideLoader();showMsg('periodMsg','Période sauvegardée ✓','success');toast('Période sauvegardée ✓');setTimeout(()=>{const e=document.getElementById('periodMsg');if(e)e.style.display='none';},3000);renderAdmin();}catch(e){hideLoader();toast('Erreur','err');}
 }
-function addVac(){
+async function addVac(){
   const s=document.getElementById('vStart').value;const e=document.getElementById('vEnd').value;
-  if(!s||!e)return;
-  if(!S.config.vacances)S.config.vacances=[];
+  if(!s||!e)return;if(!S.config.vacances)S.config.vacances=[];
   S.config.vacances.push({start:s,end:e});
-  toast('Vacances ajoutées ✓');renderAdmin();
-  Save.config().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await saveConfig();hideLoader();toast('Vacances ajoutées ✓');renderAdmin();}catch(e){hideLoader();toast('Erreur','err');}
 }
-function removeVac(i){
+async function removeVac(i){
   S.config.vacances.splice(i,1);
-  toast('Supprimé ✓');renderAdmin();
-  Save.config().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await saveConfig();hideLoader();toast('Supprimé ✓');renderAdmin();}catch(e){hideLoader();toast('Erreur','err');}
 }
-function addPerson(){
+async function addPerson(){
   const name=document.getElementById('newName').value.trim();
   const sd=document.getElementById('newStart').value||today();
   if(!name)return;
   S.persons.push({id:'p_'+Date.now(),name,startDate:sd,active:true});
   document.getElementById('newName').value='';
-  toast(`${name} ajouté(e) ✓`);renderAdmin();
-  Save.persons().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await savePersonnes();hideLoader();toast(`${name} ajouté(e) ✓`);renderAdmin();}catch(e){hideLoader();toast('Erreur','err');}
 }
-function togglePerson(id){
+async function togglePerson(id){
   const p=S.persons.find(p=>p.id===id);if(!p)return;
   p.active=p.active===false?true:false;
-  toast(p.active?'Réactivé ✓':'Retiré ✓');renderAdmin();
-  Save.persons().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await savePersonnes();hideLoader();toast(p.active?'Réactivé ✓':'Retiré ✓');renderAdmin();}catch(e){hideLoader();toast('Erreur','err');}
 }
 function editName(id){
-  const inp=document.getElementById(`ni_input_${id}`);
-  const item=document.getElementById(`ni_${id}`);
-  if(inp.readOnly){
-    inp.readOnly=false;inp.focus();item.classList.add('editing');
-    inp.onblur=()=>saveName(id);
-    inp.onkeydown=e=>{if(e.key==='Enter')saveName(id);};
-  }
+  const inp=document.getElementById(`ni_inp_${id}`);const item=document.getElementById(`ni_${id}`);
+  if(inp.readOnly){inp.readOnly=false;inp.focus();item.classList.add('editing');inp.onblur=()=>saveName(id);inp.onkeydown=e=>{if(e.key==='Enter')saveName(id);};}
 }
-function saveName(id){
-  const inp=document.getElementById(`ni_input_${id}`);if(!inp)return;
-  const item=document.getElementById(`ni_${id}`);
-  const p=S.persons.find(p=>p.id===id);
+async function saveName(id){
+  const inp=document.getElementById(`ni_inp_${id}`);if(!inp)return;
+  const item=document.getElementById(`ni_${id}`);const p=S.persons.find(p=>p.id===id);
   if(p&&inp.value.trim())p.name=inp.value.trim();
   inp.readOnly=true;if(item)item.classList.remove('editing');
-  toast('Nom modifié ✓');
-  Save.persons().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');try{await savePersonnes();hideLoader();toast('Nom modifié ✓');}catch(e){hideLoader();toast('Erreur','err');}
 }
-function resetData(){
+async function resetData(){
   if(!confirm('Réinitialiser toutes les données ? Irréversible.'))return;
   S.persons=[];S.records={};
-  toast('Données réinitialisées','error');renderAdmin();renderAppel();
-  Promise.all([Save.persons()]).catch(e=>console.error(e));
+  showLoader('Réinitialisation...');
+  try{await Promise.all([savePersonnes(),api('resetAppels',{id:S.id})]);hideLoader();toast('Données réinitialisées','err');renderAdmin();renderAppel();}
+  catch(e){hideLoader();toast('Erreur','err');}
 }
 async function deleteAll(){
   if(!confirm('Supprimer définitivement ? Irréversible.'))return;
   if(!confirm('Dernière confirmation.'))return;
-  loader(true);
-  await api({action:'deleteFeuille', id:S.id});
-  loader(false);toast('Feuille supprimée','error');disconnect();
+  showLoader('Suppression...');
+  try{await api('deleteFeuille',{id:S.id});hideLoader();toast('Feuille supprimée','err');disconnect();}
+  catch(e){hideLoader();toast('Erreur','err');}
 }
 
-// ── DRAG & DROP ───────────────────────────────────────────────
+// DnD
 let dragId=null;
 function initDnD(){
-  document.querySelectorAll('.name-item[data-id]').forEach(item=>{
+  document.querySelectorAll('.nitem[data-id]').forEach(item=>{
     item.addEventListener('dragstart',()=>{dragId=item.dataset.id;item.classList.add('dragging');});
-    item.addEventListener('dragend',()=>{item.classList.remove('dragging');document.querySelectorAll('.name-item').forEach(i=>i.classList.remove('drag-over'));});
-    item.addEventListener('dragover',e=>{e.preventDefault();item.classList.add('drag-over');});
-    item.addEventListener('dragleave',()=>item.classList.remove('drag-over'));
-    item.addEventListener('drop',e=>{
-      e.preventDefault();item.classList.remove('drag-over');
+    item.addEventListener('dragend',()=>{item.classList.remove('dragging');document.querySelectorAll('.nitem').forEach(i=>i.classList.remove('dragover'));});
+    item.addEventListener('dragover',e=>{e.preventDefault();item.classList.add('dragover');});
+    item.addEventListener('dragleave',()=>item.classList.remove('dragover'));
+    item.addEventListener('drop',async e=>{
+      e.preventDefault();item.classList.remove('dragover');
       if(dragId===item.dataset.id)return;
-      const from=S.persons.findIndex(p=>p.id===dragId);
-      const to=S.persons.findIndex(p=>p.id===item.dataset.id);
+      const from=S.persons.findIndex(p=>p.id===dragId);const to=S.persons.findIndex(p=>p.id===item.dataset.id);
       if(from===-1||to===-1)return;
       const[moved]=S.persons.splice(from,1);S.persons.splice(to,0,moved);
-      renderAdmin();Save.persons().catch(e=>console.error(e));
+      renderAdmin();
+      try{await savePersonnes();}catch(e){console.error(e);}
     });
   });
 }
 
-// ── IMPORT ────────────────────────────────────────────────────
-function handleDrop(e){e.preventDefault();document.querySelector('.upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processFile(f);}
+// IMPORT personnes
+function hDrop(e){e.preventDefault();document.querySelector('.uzone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processFile(f);}
 function importFile(e){const f=e.target.files[0];if(f)processFile(f);e.target.value='';}
 function processFile(file){
   const ext=file.name.split('.').pop().toLowerCase();const reader=new FileReader();
@@ -928,10 +864,8 @@ function processFile(file){
       else{const d=new Uint8Array(e.target.result);const wb=XLSX.read(d,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];XLSX.utils.sheet_to_json(ws,{header:1}).forEach(r=>{const v=r[0];if(v&&String(v).trim())names.push(String(v).trim());});}
       if(names[0]&&/^(nom|name|pr[eé]nom)$/i.test(names[0]))names.shift();
       if(!names.length){showMsg('importMsg','Aucun nom trouvé','error');return;}
-      // Filtrer ceux déjà existants
       const newNames=names.filter(name=>!S.persons.find(p=>p.name.toLowerCase()===name.toLowerCase()));
       if(!newNames.length){showMsg('importMsg','Toutes ces personnes existent déjà','info');return;}
-      // Ouvrir modal pour configurer les dates
       showImportModal(newNames);
     }catch(err){showMsg('importMsg','Erreur : '+err.message,'error');}
   };
@@ -942,65 +876,64 @@ function showImportModal(names){
   const rows=names.map((name,i)=>`
     <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
       <span style="flex:1;font-size:13px;font-weight:500">${name}</span>
-      <input type="date" id="imp_date_${i}" value="${S.config.yearStart||today()}" class="date-input" style="width:auto;font-size:12px">
+      <input type="date" id="imp_d_${i}" value="${safeIso(S.config.yearStart)||today()}" class="dinput" style="font-size:12px">
     </div>`).join('');
-  openModal(`
-    <div class="modal-title">📥 Importer ${names.length} personne(s)</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Définissez la date de début pour chaque personne</div>
+  window._impNames=names;
+  openModal(`<div class="modal-title">📥 Importer ${names.length} personne(s)</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Date de début pour chaque personne</div>
     <div style="margin-bottom:12px">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em">Date par défaut pour tous</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em">Date par défaut</div>
       <div style="display:flex;gap:8px">
-        <input type="date" id="imp_default" value="${S.config.yearStart||today()}" class="date-input" style="flex:1">
-        <button class="btn btn-sm btn-outline" onclick="applyDefaultDate()">Appliquer à tous</button>
+        <input type="date" id="imp_default" value="${safeIso(S.config.yearStart)||today()}" class="dinput" style="flex:1">
+        <button class="btn btn-sm btn-outline" onclick="applyDefDate()">Appliquer à tous</button>
       </div>
     </div>
-    <div style="max-height:300px;overflow-y:auto;margin-bottom:16px">${rows}</div>
-    <button class="btn" onclick="confirmImport(${JSON.stringify(names).replace(/"/g,'&quot;')})">Importer</button>
-    <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
-  `);
-  window._importNames=names;
+    <div style="max-height:280px;overflow-y:auto;margin-bottom:16px">${rows}</div>
+    <button class="btn" onclick="confirmImport()">Importer</button>
+    <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>`);
 }
 
-function applyDefaultDate(){
-  const def=document.getElementById('imp_default').value;
-  if(!def)return;
-  window._importNames.forEach((_,i)=>{
-    const inp=document.getElementById(`imp_date_${i}`);
-    if(inp)inp.value=def;
-  });
+function applyDefDate(){
+  const def=document.getElementById('imp_default').value;if(!def)return;
+  window._impNames.forEach((_,i)=>{const inp=document.getElementById(`imp_d_${i}`);if(inp)inp.value=def;});
 }
 
-function confirmImport(names){
-  let added=0;
-  names.forEach((name,i)=>{
-    const inp=document.getElementById(`imp_date_${i}`);
-    const startDate=inp?inp.value:today();
-    S.persons.push({id:'p_'+Date.now()+'_'+Math.random(),name,startDate,active:true});
-    added++;
+async function confirmImport(){
+  window._impNames.forEach((name,i)=>{
+    const inp=document.getElementById(`imp_d_${i}`);
+    const sd=inp?inp.value:today();
+    S.persons.push({id:'p_'+Date.now()+'_'+Math.random(),name,startDate:sd,active:true});
   });
   closeModal();
-  showMsg('importMsg',`${added} personne(s) importée(s) ✓`,'success');
-  toast(`${added} importée(s) ✓`);renderAdmin();
-  Save.persons().catch(e=>console.error(e));
+  showLoader('Sauvegarde...');
+  try{await savePersonnes();hideLoader();showMsg('importMsg',`${window._impNames.length} personne(s) importée(s) ✓`,'success');toast(`${window._impNames.length} importée(s) ✓`);renderAdmin();}
+  catch(e){hideLoader();toast('Erreur','err');}
 }
 
-// ── IMPORT COMPLET ───────────────────────────────────────────
-function handleHistDrop(e){e.preventDefault();document.querySelector('.upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processFullImport(f);}
+// IMPORT HISTORIQUE COMPLET
+function hHistDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f)processFullImport(f);}
 function importHistory(e){const f=e.target.files[0];if(f)processFullImport(f);e.target.value='';}
 
+// safeIso : convertit n'importe quel format de date en "yyyy-MM-dd" ou null
+function safeIso(val){
+  if(!val)return null;
+  if(val instanceof Date){if(isNaN(val.getTime()))return null;return val.getFullYear()+'-'+String(val.getMonth()+1).padStart(2,'0')+'-'+String(val.getDate()).padStart(2,'0');}
+  const s=String(val).trim().slice(0,10);
+  // Déjà au bon format
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+  // Essayer de parser la string complète (ex: "Thu Oct 02 2025...")
+  const ts=Date.parse(String(val).trim());
+  if(!isNaN(ts)){const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  return null;
+}
 function parseDate(val){
   if(!val)return null;
-  const str=String(val).trim();
-  // dd/mm/yyyy
-  const m=str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if(m)return`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
-  // ISO
-  if(/^\d{4}-\d{2}-\d{2}$/.test(str))return str;
-  // Numéro série Excel
-  if(!isNaN(str)&&str.length>4){
-    const d=new Date((Number(str)-25569)*86400000);
-    return isoDate(d);
-  }
+  if(val instanceof Date){if(isNaN(val.getTime()))return null;return val.getFullYear()+'-'+String(val.getMonth()+1).padStart(2,'0')+'-'+String(val.getDate()).padStart(2,'0');}
+  const str=String(val).trim();if(!str)return null;
+  const mISO=str.match(/^(\d{4})-(\d{2})-(\d{2})/);if(mISO)return mISO[1]+'-'+mISO[2]+'-'+mISO[3];
+  const mFR=str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(mFR)return mFR[3]+'-'+mFR[2].padStart(2,'0')+'-'+mFR[1].padStart(2,'0');
+  if(/^\d+$/.test(str)&&Number(str)>59){const n=Number(str);const d=new Date(Math.round((n-25569)*86400000));return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  const ts=Date.parse(str);if(!isNaN(ts)){const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
   return null;
 }
 
@@ -1010,114 +943,79 @@ async function processFullImport(file){
     try{
       const data=new Uint8Array(e.target.result);
       const wb=XLSX.read(data,{type:'array'});
-      const sheets={};
-      wb.SheetNames.forEach(n=>{ sheets[n.toLowerCase()]=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1}); });
-
+      const sheets={};wb.SheetNames.forEach(n=>{sheets[n.toLowerCase()]=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1});});
       let log=[];
 
-      // ── 1. Configuration ──
+      // Config
       const cfgSheet=sheets['configuration']||sheets['config'];
       if(cfgSheet){
-        const cfg={};
         cfgSheet.slice(1).forEach(row=>{
-          if(!row[0])return;
-          const key=String(row[0]).trim().toLowerCase();
-          const val=String(row[1]||'').trim();
-          if(key.includes('jour')&&key.includes('appel'))cfg.days=val.split(',').map(Number).filter(n=>!isNaN(n));
-          if(key.includes('heure')&&key.includes('début'))cfg.timeStart=val;
-          if(key.includes('heure')&&key.includes('fin'))cfg.timeEnd=val;
-          if(key.includes('date')&&key.includes('début'))cfg.yearStart=parseDate(val)||val;
-          if(key.includes('date')&&key.includes('fin')&&!key.includes('début'))cfg.yearEnd=parseDate(val)||val;
+          if(!row[0])return;const key=String(row[0]).toLowerCase();const val=String(row[1]||'').trim();
+          if(key.includes('jour'))S.config.days=val.split(',').map(Number).filter(n=>!isNaN(n));
+          if(key.includes('heure')&&key.includes('début'))S.config.timeStart=val;
+          if(key.includes('heure')&&key.includes('fin'))S.config.timeEnd=val;
+          if(key.includes('date')&&key.includes('début')){S.config.yearStart=parseDate(row[1])||safeIso(val)||today();}
+          if(key.includes('date')&&key.includes('fin')&&!key.includes('début')){S.config.yearEnd=parseDate(row[1])||safeIso(val)||'';}
         });
-        if(cfg.days)S.config.days=cfg.days;
-        if(cfg.timeStart)S.config.timeStart=cfg.timeStart;
-        if(cfg.timeEnd)S.config.timeEnd=cfg.timeEnd;
-        if(cfg.yearStart)S.config.yearStart=cfg.yearStart;
-        if(cfg.yearEnd)S.config.yearEnd=cfg.yearEnd;
-        Save.config();
-        log.push('✓ Configuration importée');
+        await saveConfig();log.push('✓ Configuration importée');
       }
 
-      // ── 2. Vacances ──
+      // Vacances
       const vacSheet=sheets['vacances'];
       if(vacSheet){
-        const vacs=[];
-        vacSheet.slice(1).forEach(row=>{
-          const s=parseDate(row[0]);const e=parseDate(row[1]);
-          if(s&&e)vacs.push({start:s,end:e});
-        });
-        if(vacs.length){
-          S.config.vacances=vacs;
-          Save.config();
-          log.push(`✓ ${vacs.length} période(s) de vacances importée(s)`);
-        }
+        const vacs=[];vacSheet.slice(1).forEach(row=>{const s=parseDate(row[0]);const e=parseDate(row[1]);if(s&&e)vacs.push({start:s,end:e});});
+        if(vacs.length){S.config.vacances=vacs;await saveConfig();log.push(`✓ ${vacs.length} période(s) de vacances`);}
       }
 
-      // ── 3. Personnes ──
+      // Personnes
       const perSheet=sheets['personnes']||sheets['import personnes'];
       if(perSheet){
         let added=0;
         perSheet.slice(1).forEach(row=>{
-          const name=String(row[0]||'').trim();
-          const sd=parseDate(row[1])||S.config.yearStart||today();
+          const name=String(row[0]||'').trim();const sd=parseDate(row[1])||S.config.yearStart||today();
           if(!name)return;
-          if(!S.persons.find(p=>p.name.toLowerCase()===name.toLowerCase())){
-            S.persons.push({id:'p_'+Date.now()+'_'+Math.random(),name,startDate:sd,active:true});
-            added++;
-          }
+          if(!S.persons.find(p=>p.name.toLowerCase()===name.toLowerCase())){S.persons.push({id:'p_'+Date.now()+'_'+Math.random(),name,startDate:sd,active:true});added++;}
         });
-        if(added){Save.persons();log.push(`✓ ${added} personne(s) importée(s)`);}
+        if(added){await savePersonnes();log.push(`✓ ${added} personne(s)`);}
       }
 
-      // ── 4. Appels (historique) ──
+      // Appels
       const appSheet=sheets['appels']||sheets['présences']||sheets['presences'];
       if(appSheet&&appSheet.length>1){
-        const headers=appSheet[0];
-        const dates=headers.slice(1).map(h=>parseDate(h));
+        const headers=appSheet[0];const dates=headers.slice(1).map(h=>parseDate(h));
         let imported=0;const saves=[];
-
         for(let i=1;i<appSheet.length;i++){
-          const row=appSheet[i];
-          if(!row||!row[0])continue;
+          const row=appSheet[i];if(!row||!row[0])continue;
           const name=String(row[0]).trim();
           let person=S.persons.find(p=>p.name.toLowerCase()===name.toLowerCase());
-          if(!person){
-            person={id:'p_'+Date.now()+'_'+Math.random(),name,startDate:S.config.yearStart||today(),active:true};
-            S.persons.push(person);
-          }
+          if(!person){person={id:'p_'+Date.now()+'_'+Math.random(),name,startDate:S.config.yearStart||today(),active:true};S.persons.push(person);}
           dates.forEach((dateIso,j)=>{
-            if(!dateIso)return;
-            const val=String(row[j+1]||'').trim().toUpperCase();
+            if(!dateIso)return;const val=String(row[j+1]||'').trim().toUpperCase();
             if(val!=='P'&&val!=='A'&&val!=='J')return;
             const status=val==='P'?'present':val==='A'?'absent':'justified';
             if(!S.records[dateIso])S.records[dateIso]={};
-            S.records[dateIso][person.id]=status;
-            S.records[dateIso].__validated=true;
+            S.records[dateIso][person.id]=status;S.records[dateIso].__validated=true;
             saves.push(dateIso);imported++;
           });
         }
-
         if(saves.length){
-          loader(true);
+          showLoader('Enregistrement des appels...');
           const uniqueDates=[...new Set(saves)];
-          await Promise.all([Save.persons(),...uniqueDates.map(d=>Save.rec(d))]);
-          loader(false);
-          log.push(`✓ ${imported} statuts importés sur ${uniqueDates.length} dates`);
+          await savePersonnes();
+          for(const d of uniqueDates){ await saveAppel(d); }
+          hideLoader();log.push(`✓ ${imported} statuts sur ${uniqueDates.length} dates`);
         }
       }
 
-      if(!log.length){showMsg('histMsg','Aucune donnée reconnue dans le fichier','error');return;}
-      showMsg('histMsg',log.join('<br>'),'success');
-      toast('Import complet ✓');
-      renderAdmin();renderAppel();
-
-    }catch(err){loader(false);showMsg('histMsg','Erreur : '+err.message,'error');console.error(err);}
+      if(!log.length){showMsg('histMsg','Aucune donnée reconnue','error');return;}
+      showMsg('histMsg',log.join(' | '),'success');
+      toast('Import complet ✓');renderAdmin();renderAppel();
+    }catch(err){hideLoader();showMsg('histMsg','Erreur : '+err.message,'error');console.error(err);}
   };
   reader.readAsArrayBuffer(file);
 }
 
-// ── INIT ──────────────────────────────────────────────────────
-goAccueil();
+goHome();
 </script>
 </body>
 </html>
